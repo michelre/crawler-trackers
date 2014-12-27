@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\CrawlerURL\SmartorrentURL;
+use AppBundle\CrawlerURL\CrawlerSmartorrentURL;
 use AppBundle\Doctrine\UrlDAO;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -24,9 +24,11 @@ class DefaultController extends Controller
      * @Route("crawl/v1/{tracker}/url", name="")
      */
     public function urlAction($tracker){
-        $urlDAO = new UrlDAO($this->get('doctrine_mongodb')->getManager());
+        $urlDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
-            $crawler = new SmartorrentURL($urlDAO);
+            $dm = $this->get('doctrine_mongodb')->getManager();
+            $urlDAO = new UrlDAO($dm, $dm->getRepository('AppBundle:SmartorrentURL'));
+            $crawler = new CrawlerSmartorrentURL($urlDAO);
             $crawler->start();
         }
         return new Response("OK");
@@ -37,11 +39,11 @@ class DefaultController extends Controller
      * @Method({"POST"})
      */
     public function dataAction($tracker){
-        $dm = $this->get('doctrine_mongodb')->getManager();
+        /*$dm = $this->get('doctrine_mongodb')->getManager();
         if(strcmp($tracker, "smartorrent") == 0){
             $crawler = new Smartorrent($dm);
             $crawler->start();
         }
-        return new Response("OK " . $tracker);
+        return new Response("OK " . $tracker);*/
     }
 }

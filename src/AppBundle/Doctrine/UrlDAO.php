@@ -8,42 +8,37 @@
 
 namespace AppBundle\Doctrine;
 
-use AppBundle\Document\url;
-
 
 class UrlDAO {
 
     private $dm;
+    private $repository;
 
-    public function __construct($dm){
+    public function __construct($dm, $repository){
         $this->dm = $dm;
+        $this->repository = $repository;
     }
 
-    public function count($query = null){
+    /*public function count($query = null){
         if(!$query)
-            return $this->dm->getRepository('AppBundle:url')
+            return $this-collection->getRepository('AppBundle:url')
                     ->count('{}');
         return null;
-    }
+    }*/
 
     public function find($limit, $offset){
-        return   $this->dm->getRepository('AppBundle:url')
+        return   $this->dm
                       ->find()
                       ->limit($limit)
                       ->skip($offset);
     }
 
     public function findByURI($uri){
-        return $this->dm->getRepository('AppBundle:url')->findOneBy(array('uri' => $uri));
+        return $this->repository
+                    ->findOneBy(array('uri' => $uri));
     }
 
-    public function createOrUpdate($uri, $visited, $tracker){
-        //$urlFound = $this->findByURI($uri);
-        $url = new url();
-        $url->setUri($uri);
-        $url->setVisited($visited);
-        $url->setTracker($tracker);
-        $url->setLastIndexationDate(date("Y-m-d"));
+    public function createOrUpdate($url){
         $this->dm->persist($url);
         $this->dm->flush();
     }

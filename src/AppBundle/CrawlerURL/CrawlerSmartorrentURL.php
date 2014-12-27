@@ -9,11 +9,11 @@
 namespace AppBundle\CrawlerURL;
 
 use AppBundle\AppBundle;
-use AppBundle\Document\url;
+use AppBundle\Document\SmartorrentURL;
 use Goutte\Client;
 
 
-class SmartorrentURL{
+class CrawlerSmartorrentURL{
 
     private $urlDAO;
     private $baseURL = "http://smartorrent.com";
@@ -66,7 +66,7 @@ class SmartorrentURL{
                     $crawler->filter('.boxContent table td.nom a')->each(function($node, $i){
                         $url = $node->attr('href');
                         if(preg_match('@\/torrent\/Torrent@', $url)){
-                            $this->urlDAO->createOrUpdate($url, false, 'smartorrent');
+                            $this->urlDAO->createOrUpdate($this->_createURLObject($url, false));
                         }
                     });
                 }
@@ -76,6 +76,14 @@ class SmartorrentURL{
         } catch (Exception $ex) {
             error_log("error retrieving data from link: " . $this->baseURL . '/torrents');
         }
+    }
+
+    protected function _createURLObject($url, $visited){
+        $smartorrentUrl = new SmartorrentURL();
+        $smartorrentUrl->setUri($url);
+        $smartorrentUrl->setVisited($visited);
+        $smartorrentUrl->setLastIndexationDate(date("Y-m-d"));
+        return $smartorrentUrl;
     }
 
 }

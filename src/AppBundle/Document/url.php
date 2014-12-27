@@ -6,11 +6,10 @@ namespace AppBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * Class Url
- * @package AppBundle\Model
- * @MongoDB\Document
+ * @MongoDB\MappedSuperclass
+ * @MongoDB\HasLifecycleCallbacks
  */
-class url {
+abstract class Url {
 
     /**
      * @MongoDB\Id
@@ -31,11 +30,6 @@ class url {
      * @MongoDB\Boolean
      */
     protected $visited;
-
-    /**
-     * @MongoDB\String
-     */
-    protected $tracker;
 
     /**
      * @param mixed $id
@@ -100,24 +94,5 @@ class url {
     {
         return $this->visited;
     }
-
-    /**
-     * @param mixed $tracker
-     */
-    public function setTracker($tracker)
-    {
-        $this->tracker = $tracker;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTracker()
-    {
-        return $this->tracker;
-    }
-
-
-
 
 }
