@@ -16,15 +16,13 @@ use AppBundle\Document\torrent;
 class Smartorrent {
 
     private $base_url;
-    private $site_links;
-    private $logger;
-    private $dm;
+    private $urlDAO;
+    private $torrentDAO;
 
-    public function __construct($logger, $dm){
+    public function __construct($urlDAO, $torrentDAO){
         $this->base_url = "http://smartorrent.com";
-        $this->site_links = array();
-        $this->logger = $logger;
-        $this->dm = $dm;
+        $this->urlDAO = $urlDAO;
+        $this->torrentDAO = $torrentDAO;
     }
 
     /**
@@ -32,89 +30,15 @@ class Smartorrent {
      * @param null $url
      */
     public function start($url = null){
-        $url = $this->base_url;
-        $this->site_links[$url] = array(
-            'visited' => false,
-            'absolute_url' => $url
-        );
-        $this->_traverseSingle($url);
+
     }
 
-    /**
-     * crawling single url after checking the depth value
-     * @param string $url_to_traverse
-     */
-    protected function _traverseSingle($url_to_traverse) {
-        try {
-            $client = new Client();
-            $crawler = $client->request('GET', $url_to_traverse);
+    protected function _linksToCrawl($limit){
+        $links = array();
+        $nbTorrents = $this->urlDAO->count();
+        for($i = 0; $i < $nbTorrents; $i+=100){
 
-            $status_code = $client->getResponse()->getStatus();
-            $this->site_links[$url_to_traverse]['status_code'] = $status_code;
-            if ($status_code == 200) { // valid url and not reached depth limit yet
-                $content_type = $client->getResponse()->getHeader('Content-Type');
-                if (strpos($content_type, 'text/html') !== false) { //traverse children in case the response in HTML document
-                    if(preg_match("@\/torrent\/Torrent@", $url_to_traverse))
-                        $this->_extractData($crawler, $url_to_traverse);
-
-                    $current_links = array();
-                    if (@$this->site_links[$url_to_traverse]['external_link'] == false) { // for internal uris, get all links inside
-                        $current_links = $this->_extractLinks($crawler, $url_to_traverse);
-                    }
-
-                    $this->site_links[$url_to_traverse]['visited'] = true; // mark current url as visited
-                    $this->_traverseChildLinks($current_links);
-                }
-            }
-
-        } catch (Guzzle\Http\Exception\CurlException $ex) {
-            error_log("CURL exception: " . $url_to_traverse);
-            $this->site_links[$url_to_traverse]['status_code'] = '404';
-        } catch (Exception $ex) {
-            error_log("error retrieving data from link: " . $url_to_traverse);
-            $this->site_links[$url_to_traverse]['status_code'] = '404';
         }
-    }
-
-    protected function _traverseChildLinks($current_links){
-        foreach($current_links as $uri => $info){
-            if(!isset($this->site_links[$uri])){
-                $this->site_links[$uri] = $info;
-            }
-            if(!empty($uri) && !$this->site_links[$uri]['visited']){
-                $this->_traverseSingle($this->normalizeLink($current_links[$uri]['absolute_url']));
-            }
-        }
-    }
-
-    protected function _extractLinks($crawler, $url){
-        $current_links = array();
-
-        $crawler->filter('a')->each(function($node, $i) use (&$current_links, $url){
-            $node_url = $node->attr('href');
-            $hash = $this->_makeAbsoluteURL($this->normalizeLink($node_url));
-            if(!isset($this->site_links[$hash]) && $this->checkIfCrawlable($node_url) && !isset($current_links[$hash])){
-                if(preg_match("@\/torrents\/.*@", $node_url) || preg_match("@\/torrent\/Torrent.*\/\d*\/$@", $node_url)){
-                    $current_links[$hash]["visited"] = false;
-                    $current_links[$hash]["absolute_url"] = $hash;
-                }
-            }
-            if(isset($current_links[$url])){ //Avoid cyclic loop
-                $current_links[$url]['visited'] = true;
-            }
-        });
-        return $current_links;
-    }
-
-    /**
-     * Make url absolute
-     * @param $url
-     */
-    protected function _makeAbsoluteURL($url){
-        if(preg_match("@^http(s)?@", $url)){
-            return $url;
-        }
-        return $this->base_url . $url;
     }
 
     /**
@@ -209,30 +133,4 @@ class Smartorrent {
 
         return $uri;
     }
-
-    /**
-     * checks the uri if can be crawled or not
-     * in order to prevent links like "javascript:void(0)" or "#something" from being crawled again
-     * @param string $uri
-     * @return boolean
-     */
-    protected function checkIfCrawlable($uri) {
-        if (empty($uri)) {
-            return false;
-        }
-
-        $stop_links = array(//returned deadlinks
-            '@^javascript\:void\(0\)$@',
-            '@^#.*@',
-        );
-
-        foreach ($stop_links as $ptrn) {
-            if (preg_match($ptrn, $uri)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 } 
