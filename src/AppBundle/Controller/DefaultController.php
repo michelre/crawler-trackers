@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\CrawlerURL\SmartorrentURL;
+use AppBundle\Doctrine\UrlDAO;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,9 +24,9 @@ class DefaultController extends Controller
      * @Route("crawl/v1/{tracker}/url", name="")
      */
     public function urlAction($tracker){
-        $dm = $this->get('doctrine_mongodb')->getManager();
+        $urlDAO = new UrlDAO($this->get('doctrine_mongodb')->getManager());
         if(strcmp($tracker, "smartorrent") == 0){
-            $crawler = new SmartorrentURL($dm);
+            $crawler = new SmartorrentURL($urlDAO);
             $crawler->start();
         }
         return new Response("OK");
