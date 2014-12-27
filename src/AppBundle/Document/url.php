@@ -33,6 +33,11 @@ class url {
     protected $visited;
 
     /**
+     * @MongoDB\String
+     */
+    protected $tracker;
+
+    /**
      * @param mixed $id
      */
     public function setId($id)
@@ -95,6 +100,24 @@ class url {
     {
         return $this->visited;
     }
+
+    /**
+     * @param mixed $tracker
+     */
+    public function setTracker($tracker)
+    {
+        $this->tracker = $tracker;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTracker()
+    {
+        return $this->tracker;
+    }
+
+
 
 
 }

@@ -66,7 +66,7 @@ class SmartorrentURL{
                     $crawler->filter('.boxContent table td.nom a')->each(function($node, $i){
                         $url = $node->attr('href');
                         if(preg_match('@\/torrent\/Torrent@', $url)){
-                            $this->urlDAO->createOrUpdate($url, false);
+                            $this->urlDAO->createOrUpdate($url, false, 'smartorrent');
                         }
                     });
                 }

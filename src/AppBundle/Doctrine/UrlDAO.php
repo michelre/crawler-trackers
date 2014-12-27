@@ -23,11 +23,12 @@ class UrlDAO {
         return $this->dm->getRepository('AppBundle:url')->findOneBy(array('uri' => $uri));
     }
 
-    public function createOrUpdate($uri, $visited){
+    public function createOrUpdate($uri, $visited, $tracker){
         $urlFound = $this->findByURI($uri);
         $url = ($urlFound != null) ? $urlFound : new url();
         $url->setUri($uri);
         $url->setVisited($visited);
+        $url->setTracker($tracker);
         $url->setLastIndexationDate(date("Y-m-d"));
         $this->dm->persist($url);
         $this->dm->flush();
