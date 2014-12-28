@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\CrawlerURL\CrawlerSmartorrentURL;
+use AppBundle\CrawlerData\CrawlerSmartorrentData;
 use AppBundle\Doctrine\UrlDAO;
+use AppBundle\Doctrine\TorrentDAO;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,13 +23,14 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("crawl/v1/{tracker}/url", name="")
+     * @Route("crawl/v1/{tracker}/url", name="url")
+     * @Method({"POST"})
      */
     public function urlAction($tracker){
         $urlDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $urlDAO = new UrlDAO($dm, $dm->getRepository('AppBundle:SmartorrentURL'));
+            $urlDAO = new UrlDAO($dm, 'AppBundle:SmartorrentURL');
             $crawler = new CrawlerSmartorrentURL($urlDAO);
             $crawler->start();
         }
@@ -39,11 +42,14 @@ class DefaultController extends Controller
      * @Method({"POST"})
      */
     public function dataAction($tracker){
-        /*$dm = $this->get('doctrine_mongodb')->getManager();
+        $urlDAO = null; $torrentDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
-            $crawler = new Smartorrent($dm);
+            $dm = $this->get('doctrine_mongodb')->getManager();
+            $urlDAO = new UrlDAO($dm, 'AppBundle:SmartorrentURL');
+            $torrentDAO = new TorrentDAO($dm, 'AppBundle:SmartorrentTorrent');
+            $crawler = new CrawlerSmartorrentData($urlDAO, $torrentDAO);
             $crawler->start();
         }
-        return new Response("OK " . $tracker);*/
+        return new Response("OK");
     }
 }
