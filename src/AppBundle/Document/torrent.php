@@ -29,11 +29,6 @@ abstract class Torrent {
     /**
      * @MongoDB\String
      */
-    protected $description;
-
-    /**
-     * @MongoDB\String
-     */
     protected $downloadLink;
 
     /**
@@ -119,28 +114,6 @@ abstract class Torrent {
     public function getTitle()
     {
         return $this->title;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     * @return self
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string $description
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**

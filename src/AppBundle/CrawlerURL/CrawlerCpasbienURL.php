@@ -7,29 +7,31 @@ use AppBundle\Document\SmartorrentURL;
 use Goutte\Client;
 
 
-class CrawlerSmartorrentURL{
+class CrawlerCpasbienURL{
 
     private $urlDAO;
-    private $baseURL = "http://smartorrent.com";
+    private $baseURL = "http://www.cpasbien.pe";
 
     public function __construct($urlDAO){
         $this->urlDAO = $urlDAO;
     }
 
     public function start(){
-        $nbTotalPages = $this->_findNbPagesTotal();
-        for($i = 1; $i <= $nbTotalPages; $i++){
-            $url = $this->baseURL . '/torrents/' . $i . '/ordre/dd/';
-            $this->_insertLinks($url);
-            usleep(50000);
+        $categories = ["films", "series", "musique", "ebook", "logiciels", "jeux-pc", "jeux-consoles"];
+        foreach($categories as $category){
+            $nbTotalPages = $this->_findNbPagesTotal($category);
+            for($i = 0; $i < $nbTotalPages; $i++){
+                $url = $this->baseURL . '/view_cat.php?categorie=' . $category .'&page=' . $i;
+                $this->_insertLinks($url);
+                usleep(50000);
+            }
         }
-
     }
 
-    protected  function _findNbPagesTotal(){
+    protected  function _findNbPagesTotal($category){
         try {
             $client = new Client();
-            $crawler = $client->request('GET', $this->baseURL . '/torrents');
+            $crawler = $client->request('GET', $this->baseURL . '/view_cat.php?categorie=films&page=1');
             $status_code = $client->getResponse()->getStatus();
             if ($status_code == 200) { // valid url and not reached depth limit yet
                 $content_type = $client->getResponse()->getHeader('Content-Type');
