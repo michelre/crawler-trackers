@@ -42,6 +42,7 @@ class CrawlerSmartorrentData {
                 $this->urlDAO->createOrUpdate($url);
             }
             $i += $limit;
+            sleep(60);
         }
     }
 
