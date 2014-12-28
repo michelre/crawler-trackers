@@ -21,7 +21,7 @@ class CrawlerSmartorrentURL{
         for($i = 1; $i <= $nbTotalPages; $i++){
             $url = $this->baseURL . '/torrents/' . $i . '/ordre/dd/';
             $this->_insertLinks($url);
-            if($i % 100 == 0) sleep(60);
+            usleep(50000);
         }
 
     }
