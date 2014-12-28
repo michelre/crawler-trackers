@@ -3,7 +3,7 @@
 
 namespace AppBundle\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use \Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
  * Class Torrent
