@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: remimichel
- * Date: 27/12/14
- * Time: 07:58
- */
 
 namespace AppBundle\Doctrine;
 
@@ -21,8 +15,9 @@ class TorrentDAO {
         return $this->dm->getRepository('AppBundle:torrent')->findBy(array('slug' => $slug));
     }
 
-    public function create($uri, $visited){
-
+    public function createOrUpdate($torrent){
+        $this->dm->persist($torrent);
+        $this->dm->flush();
     }
 
     public function update($uri, $visited){

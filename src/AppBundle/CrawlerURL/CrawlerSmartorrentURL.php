@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: remimichel
- * Date: 25/12/14
- * Time: 22:21
- */
 
 namespace AppBundle\CrawlerURL;
 

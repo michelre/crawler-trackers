@@ -6,11 +6,10 @@ namespace AppBundle\Document;
 use \Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * Class Torrent
- * @package AppBundle\Model
- * @MongoDB\Document
+ * @MongoDB\MappedSuperclass
+ * @MongoDB\HasLifecycleCallbacks
  */
-class torrent {
+abstract class Torrent {
 
     /**
      * @MongoDB\Id
