@@ -11,4 +11,4 @@ use AppBundle\Document\Torrent;
  * @package AppBundle\Document
  * @MongoDB\Document(db="torrents", collection="smartorrent")
  */
-class SmartorrentTorrent extends Torrent {}
+class Smartorrent extends Torrent {}

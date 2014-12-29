@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\CrawlerURL\CrawlerSmartorrentURL;
-use AppBundle\Crawler\CrawlerSmartorrentData;
+use AppBundle\Crawler\SmartorrentCrawler;
 use AppBundle\Crawler\CpasbienCrawler;
 use AppBundle\Doctrine\UrlDAO;
 use AppBundle\Doctrine\TorrentDAO;
@@ -46,9 +46,8 @@ class DefaultController extends Controller
         $urlDAO = null; $torrentDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $urlDAO = new UrlDAO($dm, 'AppBundle:SmartorrentURL');
             $torrentDAO = new TorrentDAO($dm, 'AppBundle:SmartorrentTorrent');
-            $crawler = new CrawlerSmartorrentData($urlDAO, $torrentDAO);
+            $crawler = new SmartorrentCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "cpasbien") == 0){
