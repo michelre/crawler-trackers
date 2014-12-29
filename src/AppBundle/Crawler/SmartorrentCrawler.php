@@ -17,15 +17,17 @@ class SmartorrentCrawler{
     }
 
     public function start(){
-        $categories = $this->_categories();
-        foreach($categories as $key => $category){
-            $nbTotalPages = $this->_findNbPagesTotal($category["url"]);
-            for($i = 1; $i <= $nbTotalPages; $i++){
-                $url = $this->baseURL . '/index.php?page=search&cat=' . $key . '&voir=' . $i;
-                $this->_extractTorrentsData($url, $category["name"]);
+        //$categories = $this->_categories();
+        //foreach($categories as $key => $category){
+            //$nbTotalPages = $this->_findNbPagesTotal($category["url"]);
+            $nbTotalPages = $this->_findNbPagesTotal();
+        var_dump($nbTotalPages);
+            for($i = 1; $i <= 2; $i++){
+                $url = $this->baseURL . '/torrents/' . $i .'/ordre/dd/'  ;
+                $this->_extractTorrentsData($url, '');
                 usleep(100000);
             }
-        }
+        //}
     }
 
     protected function _categories(){
@@ -57,14 +59,15 @@ class SmartorrentCrawler{
         );
     }
 
-    protected  function _findNbPagesTotal($url){
+    protected  function _findNbPagesTotal($url = null){
         try {
             $client = new Client();
+            $url = ($url != null) ? $url : "http://smartorrent.com/torrents/1/ordre/dd/";
             $crawler = $client->request('GET', $url);
             $status_code = $client->getResponse()->getStatus();
             if ($status_code == 200) { // valid url and not reached depth limit yet
                 $lastLink = $crawler->filter("#pagination a")->last()->attr('href');
-                preg_match("/voir=(.*)$/", $lastLink, $regexLastLink);
+                preg_match("/^\/torrents\/(\d.*)\/ordre/", $lastLink, $regexLastLink);
                 return (int)$regexLastLink[1];
             }
             return 0;
@@ -109,7 +112,8 @@ class SmartorrentCrawler{
     protected function _createTorrentObject($node, $category){
         $title = trim($node->filter('td.nom > a')->text());
         $slug  = $this->_slugify($title);
-        $size = $node->filter('td.taille')->text();
+        $size = $node->filter('td.completed')->text();
+        //$size = $node->filter('td.taille')->text();
         $seeds = $node->filter('td.seed')->text();
         $leechs = $node->filter('td.leech')->text();
         $url = $node->filter('td.nom > a')->attr('href');
