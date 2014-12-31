@@ -14,7 +14,7 @@ class SmartorrentCrawler{
 
     private $torrentDAO;
     private $baseURL = "http://www.smartorrent.com";
-    private $poolSize = 3;
+    private $poolSize = 10;
 
     public function __construct($torrentDAO){
         $this->torrentDAO = $torrentDAO;
@@ -22,12 +22,10 @@ class SmartorrentCrawler{
 
     public function start(){
         $nbTotalPages = $this->_findNbPagesTotal();
-        //for($i = 1; $i <= $nbTotalPages; $i++){
         $i = 1;
         while($i <= $nbTotalPages){
-            $requests = $this->_createPoolRequests($i, 10);
+            $requests = $this->_createPoolRequests($i, $nbTotalPages);
             $this->_extractTorrentsData($requests);
-            usleep(50000);
             $i += sizeof($requests);
         }
     }
