@@ -17,6 +17,9 @@ class TorrentDAO {
 
     public function createOrUpdate($torrent){
         $this->dm->persist($torrent);
+    }
+
+    public function flush(){
         $this->dm->flush();
     }
 

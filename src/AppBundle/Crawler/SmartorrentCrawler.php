@@ -15,7 +15,7 @@ class SmartorrentCrawler
 
     private $torrentDAO;
     private $baseURL = "http://www.smartorrent.com";
-    private $poolSize = 10;
+    private $poolSize = 50;
 
     public function __construct($torrentDAO)
     {
@@ -96,6 +96,7 @@ class SmartorrentCrawler
         foreach($torrents as $torrent){
             $this->torrentDAO->createOrUpdate($torrent);
         }
+        $this->torrentDAO->flush();
     }
 
     protected function _slugify($str, $replace = array(), $delimiter = '-')
