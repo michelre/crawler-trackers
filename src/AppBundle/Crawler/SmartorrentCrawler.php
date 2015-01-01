@@ -10,38 +10,53 @@ use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
 
 
-class SmartorrentCrawler{
+class SmartorrentCrawler
+{
 
     private $torrentDAO;
     private $baseURL = "http://www.smartorrent.com";
     private $poolSize = 10;
 
-    public function __construct($torrentDAO){
+    public function __construct($torrentDAO)
+    {
         $this->torrentDAO = $torrentDAO;
     }
 
-    public function start(){
+    public function start()
+    {
         $nbTotalPages = $this->_findNbPagesTotal();
         $i = 1;
-        while($i <= $nbTotalPages){
+        while ($i < $nbTotalPages) {
             $requests = $this->_createPoolRequests($i, $nbTotalPages);
-            $this->_extractTorrentsData($requests);
+            $torrents = $this->_extractTorrentsData($requests);
+            $this->_addTorrentsToDB($torrents);
             $i += sizeof($requests);
+        }
+        if($i == $nbTotalPages){
+            $request = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd/')];
+            $torrents = $this->_extractTorrentsData($request);
+            $this->_addTorrentsToDB($torrents);
         }
     }
 
-    protected  function _createPoolRequests($i, $total){
-        $client = new \GuzzleHttp\Client();
+    protected function _createPoolRequests($i, $total)
+    {
         $requests = [];
         $n = (($total - $i) < $this->poolSize) ? ($total - $i) : $this->poolSize;
-        for($i = 0; $i < $n; $i++){
-            $url = $this->baseURL . '/torrents/' . $i .'/ordre/dd/';
-            array_push($requests, $client->createRequest('GET', $url));
+        for ($j = 0; $j < $n; $j++) {
+            $url = $this->baseURL . '/torrents/' . ($j + $i) . '/ordre/dd/';
+            array_push($requests, $this->_createRequest($url));
         }
         return $requests;
     }
 
-    protected  function _findNbPagesTotal($url = null){
+    protected function _createRequest($url){
+        $client = new \GuzzleHttp\Client();
+        return $client->createRequest('GET', $url);
+    }
+
+    protected function _findNbPagesTotal($url = null)
+    {
         try {
             $client = new Client();
             $url = ($url != null) ? $url : "http://smartorrent.com/torrents/1/ordre/dd/";
@@ -61,31 +76,35 @@ class SmartorrentCrawler{
         }
     }
 
-    protected  function _extractTorrentsData($requests){
-        try {
-            Pool::send(new Client(), $requests, [
-                'complete' => function(CompleteEvent $event){
-                        $crawler = new Crawler($event->getResponse()->getBody()->getContents());
-                        $crawler->filter('table#parcourir tbody tr')->each(function($node, $i) use(&$category){
-                            $torrent = $this->_createTorrentObject($node, $category);
-                            $this->torrentDAO->createOrUpdate($torrent);
-                        });
-                    }
-            ]);
+    protected function _extractTorrentsData($requests)
+    {
+        $client = new Client();
+        $torrents = [];
+        Pool::send($client, $requests, [
+            'complete' => function (CompleteEvent $event) use(&$torrents) {
+                    $crawler = new Crawler($event->getResponse()->getBody()->getContents());
+                    $crawler->filter('table#parcourir tbody tr')->each(function ($node) use(&$torrents) {
+                        $torrent = $this->_createTorrentObject($node, '');
+                        array_push($torrents, $torrent);
+                    });
+                }
+        ]);
+        return $torrents;
+    }
 
-        } catch (Guzzle\Http\Exception\CurlException $ex) {
-            error_log("CURL exception: " . $this->baseURL . '/torrents');
-        } catch (Exception $ex) {
-            error_log("error retrieving data from link: " . $this->baseURL . '/torrents');
+    protected function _addTorrentsToDB($torrents){
+        foreach($torrents as $torrent){
+            $this->torrentDAO->createOrUpdate($torrent);
         }
     }
 
-    protected function _slugify($str, $replace=array(), $delimiter='-') {
-        if( !empty($replace) ) {
+    protected function _slugify($str, $replace = array(), $delimiter = '-')
+    {
+        if (!empty($replace)) {
             $str = str_replace((array)$replace, ' ', $str);
         }
 
-        $clean = $str;//iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        $clean = $str; //iconv('UTF-8', 'ASCII//TRANSLIT', $str);
         $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
         $clean = strtolower(trim($clean, '-'));
         $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
@@ -93,11 +112,11 @@ class SmartorrentCrawler{
         return $clean;
     }
 
-    protected function _createTorrentObject($node, $category){
+    protected function _createTorrentObject($node, $category)
+    {
         $title = trim($node->filter('td.nom > a')->text());
-        $slug  = $this->_slugify($title);
+        $slug = $this->_slugify($title);
         $size = $node->filter('td.completed')->text();
-        //$size = $node->filter('td.taille')->text();
         $seeds = $node->filter('td.seed')->text();
         $leechs = $node->filter('td.leech')->text();
         $url = $node->filter('td.nom > a')->attr('href');
