@@ -15,7 +15,7 @@ class SmartorrentCrawler
 
     private $torrentDAO;
     private $baseURL = "http://www.smartorrent.com";
-    private $poolSize = 50;
+    private $poolSize = 100;
 
     public function __construct($torrentDAO)
     {
@@ -28,14 +28,14 @@ class SmartorrentCrawler
         $i = 1;
         while ($i < $nbTotalPages) {
             $requests = $this->_createPoolRequests($i, $nbTotalPages);
-            $torrents = $this->_extractTorrentsData($requests);
-            $this->_addTorrentsToDB($torrents);
+            $this->_extractTorrentsData($requests);
+            $this->torrentDAO->flush();
             $i += sizeof($requests);
         }
         if($i == $nbTotalPages){
             $request = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd/')];
-            $torrents = $this->_extractTorrentsData($request);
-            $this->_addTorrentsToDB($torrents);
+            $this->_extractTorrentsData($request);
+            $this->torrentDAO->flush();
         }
     }
 
@@ -85,18 +85,11 @@ class SmartorrentCrawler
                     $crawler = new Crawler($event->getResponse()->getBody()->getContents());
                     $crawler->filter('table#parcourir tbody tr')->each(function ($node) use(&$torrents) {
                         $torrent = $this->_createTorrentObject($node, '');
-                        array_push($torrents, $torrent);
+                        $this->torrentDAO->createOrUpdate($torrent);
                     });
                 }
         ]);
         return $torrents;
-    }
-
-    protected function _addTorrentsToDB($torrents){
-        foreach($torrents as $torrent){
-            $this->torrentDAO->createOrUpdate($torrent);
-        }
-        $this->torrentDAO->flush();
     }
 
     protected function _slugify($str, $replace = array(), $delimiter = '-')
