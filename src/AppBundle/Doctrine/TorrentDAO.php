@@ -16,6 +16,7 @@ class TorrentDAO {
     }
 
     public function createOrUpdate($torrent){
+        //var_dump($this->dm->getUnitOfWork()->size());
         $this->dm->persist($torrent);
     }
 

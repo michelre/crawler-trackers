@@ -2,9 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\CrawlerURL\CrawlerSmartorrentURL;
 use AppBundle\Crawler\SmartorrentCrawler;
 use AppBundle\Crawler\CpasbienCrawler;
+use AppBundle\Crawler\KickassCrawler;
 use AppBundle\Doctrine\UrlDAO;
 use AppBundle\Doctrine\TorrentDAO;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -24,21 +24,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("crawl/v1/{tracker}/url", name="url")
-     * @Method({"POST"})
-     */
-    public function urlAction($tracker){
-        $urlDAO = null;
-        if(strcmp($tracker, "smartorrent") == 0){
-            $dm = $this->get('doctrine_mongodb')->getManager();
-            $urlDAO = new UrlDAO($dm, 'AppBundle:SmartorrentURL');
-            $crawler = new CrawlerSmartorrentURL($urlDAO);
-            $crawler->start();
-        }
-        return new Response("OK");
-    }
-
-    /**
      * @Route("crawl/v1/{tracker}/data", name="data")
      * @Method({"POST"})
      */
@@ -46,14 +31,20 @@ class DefaultController extends Controller
         $urlDAO = null; $torrentDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $torrentDAO = new TorrentDAO($dm, 'AppBundle:SmartorrentTorrent');
+            $torrentDAO = new TorrentDAO($dm);
             $crawler = new SmartorrentCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "cpasbien") == 0){
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $torrentDAO = new TorrentDAO($dm, 'AppBundle:Cpasbien');
+            $torrentDAO = new TorrentDAO($dm);
             $crawler = new CpasbienCrawler($torrentDAO);
+            $crawler->start();
+        }
+        if(strcmp($tracker, "kickass") == 0){
+            $dm = $this->get('doctrine_mongodb')->getManager();
+            $torrentDAO = new TorrentDAO($dm);
+            $crawler = new KickassCrawler($torrentDAO);
             $crawler->start();
         }
         return new Response("OK");

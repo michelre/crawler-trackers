@@ -125,6 +125,7 @@ class SmartorrentCrawler
         $torrent->setLeechs($leechs);
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
+        $torrent->setTracker("smartorrent");
         return $torrent;
     }
 
