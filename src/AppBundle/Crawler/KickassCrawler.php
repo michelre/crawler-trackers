@@ -9,7 +9,6 @@ use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Stream;
-use Guzzle\Http\EntityBody;
 
 
 
@@ -18,7 +17,7 @@ class KickassCrawler
 
     private $torrentDAO;
     private $baseURL = "https://kickass.so";
-    private $poolSize = 10000;
+    private $poolSize = 100;
     private $dataFileName;
 
     public function __construct($torrentDAO)
@@ -49,9 +48,9 @@ class KickassCrawler
 
     protected function _downloadAndExtractDataFile(){
         $client = new Client();
-        $client->get('https://kickass.so/dailydump.txt.gz',['save_to' => '/tmp/data.txt.gz']);
-        exec('gzip -d /tmp/data-daily.txt.gz');
-        $this->dataFileName = '/tmp/data-daily.txt';
+        //$client->get('https://kickass.so/dailydump.txt.gz',['save_to' => '/tmp/data.txt.gz']);
+        //exec('gzip -d /tmp/data.txt.gz');
+        $this->dataFileName = '/tmp/data.txt';
     }
 
     protected function _createRequest($url){
@@ -65,10 +64,8 @@ class KickassCrawler
         $torrents = [];
         Pool::send($client, $requests, array(
             'complete' => function (CompleteEvent $event) use(&$torrents) {
-                    $body = EntityBody::factory($event->getResponse()->getBody());
-                    $body->compress('gzip');
-                    $stream = Stream\Stream::factory($body);
-                    $crawler = new Crawler($stream->getContents());
+                    $body = $event->getResponse()->getBody()->getContents();
+                    $crawler = new Crawler($body);
                     $torrent = $this->_createTorrentObject($crawler);
                     $this->torrentDAO->createOrUpdate($torrent);
                 }
