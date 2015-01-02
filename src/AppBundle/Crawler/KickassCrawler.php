@@ -41,7 +41,6 @@ class KickassCrawler
                     $this->torrentDAO->flush();
                     $requests = [];
                     $row = 0;
-                    exit(0);
                 }
             }
             fclose($handle);
