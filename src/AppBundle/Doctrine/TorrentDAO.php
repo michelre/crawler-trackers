@@ -19,7 +19,8 @@ class TorrentDAO {
 
 
     public function createOrUpdate($torrent){
-        if(!empty($torrents = $this->findBySlug($torrent->getSlug())))
+        $torrents = $this->findBySlug($torrent->getSlug());
+        if(!empty($torrents))
             $this->update($torrent, $torrents[0]);
         else
             $this->dm->persist($torrent);
