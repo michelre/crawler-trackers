@@ -15,7 +15,7 @@ class BtstorrentCrawler
 
     private $torrentDAO;
     private $baseURL = "http://www.btstorrent.so";
-    private $poolSize = 200;
+    private $poolSize = 100;
 
     public function __construct($torrentDAO, $logger)
     {
