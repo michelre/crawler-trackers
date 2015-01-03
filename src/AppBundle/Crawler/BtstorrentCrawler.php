@@ -34,11 +34,13 @@ class BtstorrentCrawler
                     $this->_extractTorrentsData($requests, $category["name"]);
                     $i += sizeof($requests);
                     $this->torrentDAO->flush();
+                    $this->torrentDAO->clear();
                 }
                 if ($i >= $nbTotalPages || $nbTotalPages == 0) {
                     $request = [$this->_createRequest($link)];
                     $this->_extractTorrentsData($request, $category["name"]);
                     $this->torrentDAO->flush();
+                    $this->torrentDAO->clear();
                 }
             }
         }
@@ -49,8 +51,9 @@ class BtstorrentCrawler
         $client = new Client();
         $response = $client->get($this->baseURL . '/browse/');
         $crawler = new Crawler($response->getBody()->getContents());
-        $categories = array(1 => array('name' => 'Films', 'links' => []),
-            2 => array('name' => "Series", 'links' => []),
+        $categories = array(
+            //1 => array('name' => 'Films', 'links' => []),
+            //2 => array('name' => "Series", 'links' => []),
             3 => array('name' => 'Musique', 'links' => []),
             4 => array('name' => "Jeux", 'links' => []),
             5 => array('name' => "Logiciels", 'links' => []),

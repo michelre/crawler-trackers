@@ -42,4 +42,8 @@ class TorrentDAO {
         $this->dm->flush();
     }
 
+    public function clear(){
+        $this->dm->clear();
+    }
+
 } 
