@@ -35,14 +35,15 @@ class BtstorrentCrawler
                     $requests = $this->_createPoolRequests($i, $nbTotalPages, $link);
                     $this->_extractTorrentsData($requests, $category["name"]);
                     $i += sizeof($requests);
+                    $this->torrentDAO->flush();
                 }
                 if ($i == $nbTotalPages || $nbTotalPages == 0) {
                     $request = [$this->_createRequest($link)];
                     $this->logger->info($link);
                     $this->_extractTorrentsData($request, $category["name"]);
+                    $this->torrentDAO->flush();
                 }
             }
-            $this->torrentDAO->flush();
         }
     }
 
