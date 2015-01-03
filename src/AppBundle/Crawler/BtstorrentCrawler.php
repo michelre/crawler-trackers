@@ -15,13 +15,11 @@ class BtstorrentCrawler
 
     private $torrentDAO;
     private $baseURL = "http://www.btstorrent.so";
-    private $poolSize = 100;
-    private $logger;
+    private $poolSize = 200;
 
     public function __construct($torrentDAO, $logger)
     {
         $this->torrentDAO = $torrentDAO;
-        $this->logger = $logger;
     }
 
     public function start()
@@ -39,7 +37,6 @@ class BtstorrentCrawler
                 }
                 if ($i == $nbTotalPages || $nbTotalPages == 0) {
                     $request = [$this->_createRequest($link)];
-                    $this->logger->info($link);
                     $this->_extractTorrentsData($request, $category["name"]);
                     $this->torrentDAO->flush();
                 }
@@ -75,7 +72,7 @@ class BtstorrentCrawler
     {
         $requests = [];
         $n = (($total - $i) < $this->poolSize) ? ($total - $i) : $this->poolSize;
-        for ($j = 1; $j <= $n; $j++) {
+        for ($j = $i; $j <= $n; $j++) {
             $url = $link . 'page/' . $j . '/';
             array_push($requests, $this->_createRequest($url));
         }
@@ -150,7 +147,6 @@ class BtstorrentCrawler
         $torrent->setUrl($urlTorrent);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("btstorrent");
-        var_dump($torrent);
         return $torrent;
     }
 
