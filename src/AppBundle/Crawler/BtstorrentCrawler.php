@@ -74,7 +74,6 @@ class BtstorrentCrawler
         $n = (($total - $i) < $this->poolSize) ? ($total - $i) : $this->poolSize;
         for ($j = $i; $j <= ($n + $i); $j++) {
             $url = $link . 'page/' . $j . '/';
-            var_dump($url);
             array_push($requests, $this->_createRequest($url));
         }
         return $requests;
