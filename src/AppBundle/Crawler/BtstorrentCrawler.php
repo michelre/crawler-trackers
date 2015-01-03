@@ -105,7 +105,7 @@ class BtstorrentCrawler
     {
         $client = new Client();
         Pool::send($client, $requests, [
-            'complete' => function (CompleteEvent $event) use (&$torrents) {
+            'complete' => function (CompleteEvent $event) use (&$torrents, &$category) {
                     $crawler = new Crawler($event->getResponse()->getBody()->getContents());
                     $crawler->filter('table.tor tr[id]')->each(function ($node) use(&$event, &$category){
                         $torrent = $this->_createTorrentObject($node, $category);
@@ -150,6 +150,7 @@ class BtstorrentCrawler
         $torrent->setUrl($urlTorrent);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("btstorrent");
+        var_dump($torrent);
         return $torrent;
     }
 
