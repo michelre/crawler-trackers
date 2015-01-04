@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Crawler\BtstorrentCrawler;
 use AppBundle\Crawler\SmartorrentCrawler;
 use AppBundle\Crawler\CpasbienCrawler;
-use AppBundle\Crawler\KickassCrawler;
+use AppBundle\Crawler\ZetorrentsCrawler;
 use AppBundle\Crawler\OmgCrawler;
 use AppBundle\Doctrine\TorrentDAO;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -42,9 +42,9 @@ class DefaultController extends Controller
             $crawler = new CpasbienCrawler($torrentDAO, $logger);
             $crawler->start();
         }
-        if(strcmp($tracker, "kickass") == 0){
-            $torrentDAO = new TorrentDAO($dm, 'Kickass');
-            $crawler = new KickassCrawler($torrentDAO);
+        if(strcmp($tracker, "zetorrents") == 0){
+            $torrentDAO = new TorrentDAO($dm, 'Zetorrents');
+            $crawler = new ZetorrentsCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "btstorrent") == 0){

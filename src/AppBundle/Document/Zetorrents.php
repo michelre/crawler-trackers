@@ -9,6 +9,6 @@ use AppBundle\Document\Torrent;
 /**
  * Class SmartorrentTorrent
  * @package AppBundle\Document
- * @MongoDB\Document(db="torrents", collection="kickass")
+ * @MongoDB\Document(db="torrents", collection="zetorrents")
  */
-class Kickass extends Torrent {}
+class Zetorrents extends Torrent {}
