@@ -3,7 +3,7 @@
 namespace AppBundle\Crawler;
 
 use AppBundle\AppBundle;
-use AppBundle\Document\Cpasbien;
+use AppBundle\Document\Omg;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -11,42 +11,34 @@ use GuzzleHttp\Pool;
 
 
 
-class CpasbienCrawler{
+class OmgCrawler{
 
     private $torrentDAO;
-    private $baseURL = "http://www.cpasbien.pe";
+    private $baseURL = "http://www.omgtorrent.com";
     private $poolSize = 100;
-    private $logger;
 
     public function __construct($torrentDAO, $logger){
         $this->torrentDAO = $torrentDAO;
-        $this->logger = $logger;
     }
 
     public function start(){
-        $categories = ["films", "series", "musique", "ebook", "logiciels", "jeux-pc", "jeux-consoles"];
-        foreach($categories as $category){
-            $nbTotalPages = $this->_findNbPagesTotal($category);
-            $i = 0;
-            while ($i < $nbTotalPages) {
-                $requests = $this->_createPoolRequests($i, $nbTotalPages, $category);
-                $this->_extractTorrentsData($requests);
-                $i += sizeof($requests);
-            }
-            if($i == $nbTotalPages){
-                $request = [$this->_createRequest($this->baseURL . '/view_cat.php?categorie=' . $category .'&page=' . $nbTotalPages)];
-                $this->_extractTorrentsData($request);
-            }
+        $nbTotalPages = $this->_findNbPagesTotal();
+        $i = 1;
+        while ($i <= $nbTotalPages) {
+            $requests = $this->_createPoolRequests($i, $nbTotalPages);
+            $this->_extractTorrentsData($requests);
+            $i += sizeof($requests);
             $this->torrentDAO->flush();
+            $this->torrentDAO->clear();
         }
     }
 
-    protected function _createPoolRequests($i, $total, $category)
+    protected function _createPoolRequests($i, $total)
     {
         $requests = [];
         $n = (($total - $i) < $this->poolSize) ? ($total - $i) : $this->poolSize;
-        for ($j = $i; $j < ($i + $n); $j++) {
-            $url = $this->baseURL . '/view_cat.php?categorie=' . $category .'&page=' . $j;
+        for ($j = $i; $j <= ($n + $i); $j++) {
+            $url = $this->baseURL . '/torrents/?order=id&orderby=desc&page=' . $j;
             array_push($requests, $this->_createRequest($url));
         }
         return $requests;
@@ -57,11 +49,11 @@ class CpasbienCrawler{
         return $client->createRequest('GET', $url);
     }
 
-    protected  function _findNbPagesTotal($category){
+    protected  function _findNbPagesTotal(){
         $client = new Client();
-        $response = $client->get($this->baseURL . '/view_cat.php?categorie='. $category .'&page=1');
+        $response = $client->get($this->baseURL . '/torrents/?order=id&orderby=desc&page=1');
         $crawler = new Crawler($response->getBody()->getContents());
-        $links = $crawler->filter("#pagination")->children('a');
+        $links = $crawler->filter("div.nav")->children('a');
         return (int)$links->getNode(sizeof($links)-2)->textContent;
     }
 
@@ -71,7 +63,7 @@ class CpasbienCrawler{
         Pool::send($client, $requests, [
             'complete' => function (CompleteEvent $event) use(&$torrents) {
                     $crawler = new Crawler($event->getResponse()->getBody()->getContents());
-                    $crawler->filter('#gauche div[class="ligne0"], #gauche div[class="ligne1"]')->each(function ($node){
+                    $crawler->filter('#corps .table_corps tr:not([class="table_entete"])')->each(function ($node){
                         $torrent = $this->_createTorrentObject($node);
                         $this->torrentDAO->createOrUpdate($torrent);
                     });
@@ -94,18 +86,16 @@ class CpasbienCrawler{
     }
 
     protected function _createTorrentObject($node){
-        $title = $node->filter('a.titre')->text();
-        $this->logger->info("Creating object " . $title);
+        $title = $node->filter('td:nth-child(2) a')->text();
         $slug  = $this->_slugify($title);
-        $size = trim($node->filter('div.poid')->text());
-        $seeds = $node->filter('div.up > span')->text();
-        $leechs = $node->filter('div.down')->text();
-        $url = $node->filter('a.titre')->attr('href');
-        preg_match("/^(.*)\/(.*).html$/", $url, $urlRegex);
-        $downloadLink = $this->baseURL . '/telechargement/' . $urlRegex[2] . '.torrent';
-        preg_match("/dl-torrent\/(.*)\/.*\//", $url, $category);
-        $category = $category[1];
-        $torrent = new Cpasbien();
+        $size = $node->filter('td:nth-child(3)')->text();
+        $seeds = preg_replace("/,/", "", $node->filter('td.sources')->text());
+        $leechs = preg_replace("/,/", "", $node->filter('td.clients')->text());
+        $url = $this->baseURL . $node->filter('td:nth-child(2) a')->attr('href');
+        preg_match("/_(\d.*).html$/", $url, $urlRegex);
+        $downloadLink = $this->baseURL . '/clic_dl.php?id=' . $urlRegex[1];
+        $category = $node->filter('td:nth-child(1)')->text();
+        $torrent = new Omg();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);
         $torrent->setCategory($category);

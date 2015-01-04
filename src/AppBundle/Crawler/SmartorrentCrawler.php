@@ -43,7 +43,7 @@ class SmartorrentCrawler
     {
         $requests = [];
         $n = (($total - $i) < $this->poolSize) ? ($total - $i) : $this->poolSize;
-        for ($j = 0; $j < $n; $j++) {
+        for ($j = $i; $j < ($i + $n); $j++) {
             $url = $this->baseURL . '/torrents/' . ($j + $i) . '/ordre/dd/';
             array_push($requests, $this->_createRequest($url));
         }
