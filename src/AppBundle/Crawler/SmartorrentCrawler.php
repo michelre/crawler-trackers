@@ -33,9 +33,9 @@ class SmartorrentCrawler
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
         }
-        if($i == $nbTotalPages){
-            $request = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd/')];
-            $this->_extractTorrentsData($request);
+        if($i >= $nbTotalPages){
+            $requests = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd')];
+            $this->_extractTorrentsData($requests);
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
         }
@@ -46,7 +46,7 @@ class SmartorrentCrawler
         $requests = [];
         $n = (($total - $i) < $this->poolSize) ? ($total - $i) : $this->poolSize;
         for ($j = $i; $j < ($i + $n); $j++) {
-            $url = $this->baseURL . '/torrents/' . ($j + $i) . '/ordre/dd/';
+            $url = $this->baseURL . '/torrents/' . $j . '/ordre/dd/';
             array_push($requests, $this->_createRequest($url));
         }
         return $requests;
