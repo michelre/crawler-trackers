@@ -29,13 +29,15 @@ class SmartorrentCrawler
         while ($i < $nbTotalPages) {
             $requests = $this->_createPoolRequests($i, $nbTotalPages);
             $this->_extractTorrentsData($requests);
-            $this->torrentDAO->flush();
             $i += sizeof($requests);
+            $this->torrentDAO->flush();
+            $this->torrentDAO->clear();
         }
         if($i == $nbTotalPages){
             $request = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd/')];
             $this->_extractTorrentsData($request);
             $this->torrentDAO->flush();
+            $this->torrentDAO->clear();
         }
     }
 

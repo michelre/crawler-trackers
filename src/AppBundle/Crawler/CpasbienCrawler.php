@@ -32,12 +32,15 @@ class CpasbienCrawler{
                 $requests = $this->_createPoolRequests($i, $nbTotalPages, $category);
                 $this->_extractTorrentsData($requests);
                 $i += sizeof($requests);
+                $this->torrentDAO->flush();
+                $this->torrentDAO->clear();
             }
             if($i == $nbTotalPages){
                 $request = [$this->_createRequest($this->baseURL . '/view_cat.php?categorie=' . $category .'&page=' . $nbTotalPages)];
                 $this->_extractTorrentsData($request);
+                $this->torrentDAO->flush();
+                $this->torrentDAO->clear();
             }
-            $this->torrentDAO->flush();
         }
     }
 
