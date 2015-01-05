@@ -30,7 +30,6 @@ class DefaultController extends Controller
      */
     public function dataAction($tracker){
         $urlDAO = null; $torrentDAO = null;
-        $logger = $this->get('logger');
         $dm = $this->get('doctrine_mongodb')->getManager();
         if(strcmp($tracker, "smartorrent") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Smartorrent');
@@ -39,7 +38,7 @@ class DefaultController extends Controller
         }
         if(strcmp($tracker, "cpasbien") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Cpasbien');
-            $crawler = new CpasbienCrawler($torrentDAO, $logger);
+            $crawler = new CpasbienCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "zetorrents") == 0){
@@ -49,12 +48,12 @@ class DefaultController extends Controller
         }
         if(strcmp($tracker, "btstorrent") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Btstorrent');
-            $crawler = new BtstorrentCrawler($torrentDAO, $logger);
+            $crawler = new BtstorrentCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "omg") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Omg');
-            $crawler = new OmgCrawler($torrentDAO, $logger);
+            $crawler = new OmgCrawler($torrentDAO);
             $crawler->start();
         }
         return new Response("OK");

@@ -134,6 +134,7 @@ class ZetorrentsCrawler{
         $torrent->setLeechs($leechs);
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
+        $torrent->setTracker("zetorrents");
         return $torrent;
     }
 

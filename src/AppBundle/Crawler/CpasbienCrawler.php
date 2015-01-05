@@ -16,11 +16,9 @@ class CpasbienCrawler{
     private $torrentDAO;
     private $baseURL = "http://www.cpasbien.pe";
     private $poolSize = 100;
-    private $logger;
 
-    public function __construct($torrentDAO, $logger){
+    public function __construct($torrentDAO){
         $this->torrentDAO = $torrentDAO;
-        $this->logger = $logger;
     }
 
     public function start(){
@@ -35,7 +33,7 @@ class CpasbienCrawler{
                 $this->torrentDAO->flush();
                 $this->torrentDAO->clear();
             }
-            if($i == $nbTotalPages){
+            if($i >= $nbTotalPages){
                 $request = [$this->_createRequest($this->baseURL . '/view_cat.php?categorie=' . $category .'&page=' . $nbTotalPages)];
                 $this->_extractTorrentsData($request);
                 $this->torrentDAO->flush();
@@ -98,7 +96,6 @@ class CpasbienCrawler{
 
     protected function _createTorrentObject($node){
         $title = $node->filter('a.titre')->text();
-        $this->logger->info("Creating object " . $title);
         $slug  = $this->_slugify($title);
         $size = trim($node->filter('div.poid')->text());
         $seeds = $node->filter('div.up > span')->text();
@@ -117,6 +114,7 @@ class CpasbienCrawler{
         $torrent->setLeechs($leechs);
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
+        $torrent->setTracker("cpasbien");
         return $torrent;
     }
 
