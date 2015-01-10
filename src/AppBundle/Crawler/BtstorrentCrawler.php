@@ -52,8 +52,8 @@ class BtstorrentCrawler
         $response = $client->get($this->baseURL . '/browse/');
         $crawler = new Crawler($response->getBody()->getContents());
         $categories = array(
-            //1 => array('name' => 'Films', 'links' => []),
-            //2 => array('name' => "Series", 'links' => []),
+            1 => array('name' => 'Films', 'links' => []),
+            2 => array('name' => "Series", 'links' => []),
             3 => array('name' => 'Musique', 'links' => []),
             4 => array('name' => "Jeux", 'links' => []),
             5 => array('name' => "Logiciels", 'links' => []),
@@ -63,7 +63,9 @@ class BtstorrentCrawler
             9 => array('name' => "Ebooks", 'links' => []));
         foreach ($categories as $key => $values) {
             $crawler->filter('#subcat_ul_' . $key . ' li > a:not([rel])')->each(function ($node) use (&$categories, &$values, &$key) {
-                array_push($values["links"], $this->baseURL . $node->attr('href'));
+                if(preg_match('#^\/subcat\/#', $node->attr('href'))){
+                    array_push($values["links"], $this->baseURL . $node->attr('href'));
+                }
                 $categories[$key] = $values;
             });
         }
