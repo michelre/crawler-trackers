@@ -118,6 +118,7 @@ class SmartorrentCrawler
         $url = $node->filter('td.nom > a')->attr('href');
         preg_match("/\/(\d.*)\/$/", $url, $urlRegex);
         $downloadLink = $this->baseURL . '/?page=download&tid=' . $urlRegex[1];
+        $category = $this->_getCategoryCorrespondance($node->filter('td.nom > div')->attr('class'));
         $torrent = new Smartorrent();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);
@@ -129,6 +130,20 @@ class SmartorrentCrawler
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("smartorrent");
         return $torrent;
+    }
+
+    protected function _getCategoryCorrespondance($className){
+        $categories = array(
+          'global_misc'   => 'Ebook',
+          'global_dvdrip' => 'Films',
+          'global_pc'     => 'Applications',
+          'global_dvdrip' => 'Films',
+          'global_music'  => 'Musique',
+          'global_tvrip'  => 'Série',
+          'global_ebook'   => 'Jeux',
+        );
+
+        return $categories[$className];
     }
 
 }
