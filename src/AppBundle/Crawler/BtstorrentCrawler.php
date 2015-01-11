@@ -124,7 +124,7 @@ class BtstorrentCrawler
             $str = str_replace((array)$replace, ' ', $str);
         }
 
-        $clean = $str; //iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
         $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
         $clean = strtolower(trim($clean, '-'));
         $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
@@ -135,13 +135,13 @@ class BtstorrentCrawler
     protected function _createTorrentObject($node, $category)
     {
         $title = $node->filter('.tname a')->text();
-        $slug = $this->_slugify($title);
         $size = $node->filter('.tsize')->text();
         $seeds = $node->filter('.tseeds')->text();
         $leechs = $node->filter('.tpeers')->text();
         $urlTorrent = $this->baseURL . $node->filter('.tname a')->attr("href");
         preg_match("/tf(.*).html$/", $urlTorrent, $downloadLink);
         $downloadLink = $this->baseURL . '/torrentdownload.php?id=' . $downloadLink[1];
+        $slug = $this->_slugify($title . ' ' . $downloadLink[1]);
         $torrent = new Btstorrent();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);
