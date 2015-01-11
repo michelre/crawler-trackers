@@ -17,12 +17,10 @@ class BtstorrentCrawler
     private $torrentDAO;
     private $baseURL = "http://www.btstorrent.so";
     private $poolSize = 100;
-    private $slugify;
 
     public function __construct($torrentDAO)
     {
         $this->torrentDAO = $torrentDAO;
-        $this->slugify = new Slugify();
     }
 
     public function start()
@@ -124,6 +122,7 @@ class BtstorrentCrawler
 
     protected function _createTorrentObject($node, $category)
     {
+        $slugify = new Slugify();
         $title = $node->filter('.tname a')->text();
         $size = $node->filter('.tsize')->text();
         $seeds = $node->filter('.tseeds')->text();
@@ -131,7 +130,7 @@ class BtstorrentCrawler
         $urlTorrent = $this->baseURL . $node->filter('.tname a')->attr("href");
         preg_match("/tf(.*).html$/", $urlTorrent, $downloadLink);
         $downloadLink = $this->baseURL . '/torrentdownload.php?id=' . $downloadLink[1];
-        $slug = $this->slugify->slugify($title . ' ' . $downloadLink[1]);
+        $slug = $slugify->slugify($title . ' ' . $downloadLink[1]);
         $torrent = new Btstorrent();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);
