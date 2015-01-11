@@ -36,27 +36,27 @@ class DefaultController extends Controller
         if(strcmp($tracker, "smartorrent") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Smartorrent');
             $crawler = new SmartorrentCrawler($torrentDAO);
-            //$crawler->start();
+            $crawler->start();
         }
         if(strcmp($tracker, "cpasbien") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Cpasbien');
             $crawler = new CpasbienCrawler($torrentDAO);
-            //$crawler->start();
+            $crawler->start();
         }
         if(strcmp($tracker, "zetorrents") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Zetorrents');
             $crawler = new ZetorrentsCrawler($torrentDAO);
-            //$crawler->start();
+            $crawler->start();
         }
         if(strcmp($tracker, "btstorrent") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Btstorrent');
             $crawler = new BtstorrentCrawler($torrentDAO);
-            //$crawler->start();
+            $crawler->start();
         }
         if(strcmp($tracker, "omg") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Omg');
             $crawler = new OmgCrawler($torrentDAO);
-            //$crawler->start();
+            $crawler->start();
         }
         if($torrentDAO !== null){
             $statsDAO = new StatsDAO($dm);
