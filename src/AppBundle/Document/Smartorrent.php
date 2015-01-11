@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use AppBundle\Document\Torrent;
 
 /**
- * Class SmartorrentTorrent
+ * Class Smartorrent
  * @package AppBundle\Document
  * @MongoDB\Document(db="torrents", collection="smartorrent")
  */

@@ -17,6 +17,9 @@ class TorrentDAO {
         return $this->dm->getRepository('AppBundle:' . $this->repositoryName)->findBy(array('slug' => $slug));
     }
 
+    public function nbTotalTorrents(){
+        return $this->dm->createQueryBuilder('AppBundle:' . $this->repositoryName)->count()->getQuery()->execute();
+    }
 
     public function createOrUpdate($torrent){
         //$torrents = $this->findBySlug($torrent->getSlug());
