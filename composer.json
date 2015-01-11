@@ -21,7 +21,8 @@
         "doctrine/mongodb-odm": "1.0.*@dev",
         "doctrine/mongodb-odm-bundle": "3.0.*@dev",
         "guzzlehttp/guzzle": "~5.0",
-        "symfony/dom-crawler": "2.6.1"
+        "symfony/dom-crawler": "2.6.1",
+        "cocur/slugify": "~1.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

@@ -8,6 +8,7 @@ use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
+use Cocur\Slugify\Slugify;
 
 
 class BtstorrentCrawler
@@ -16,10 +17,12 @@ class BtstorrentCrawler
     private $torrentDAO;
     private $baseURL = "http://www.btstorrent.so";
     private $poolSize = 100;
+    private $slugify;
 
     public function __construct($torrentDAO)
     {
         $this->torrentDAO = $torrentDAO;
+        $this->slugify = new Slugify();
     }
 
     public function start()
@@ -118,19 +121,6 @@ class BtstorrentCrawler
         return $torrents;
     }
 
-    protected function _slugify($str, $replace = array(), $delimiter = '-')
-    {
-        if (!empty($replace)) {
-            $str = str_replace((array)$replace, ' ', $str);
-        }
-
-        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
-        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-
-        return $clean;
-    }
 
     protected function _createTorrentObject($node, $category)
     {
@@ -141,7 +131,7 @@ class BtstorrentCrawler
         $urlTorrent = $this->baseURL . $node->filter('.tname a')->attr("href");
         preg_match("/tf(.*).html$/", $urlTorrent, $downloadLink);
         $downloadLink = $this->baseURL . '/torrentdownload.php?id=' . $downloadLink[1];
-        $slug = $this->_slugify($title . ' ' . $downloadLink[1]);
+        $slug = $this->slugify->slugify($title . ' ' . $downloadLink[1]);
         $torrent = new Btstorrent();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);
