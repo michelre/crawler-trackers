@@ -128,9 +128,9 @@ class BtstorrentCrawler
         $seeds = $node->filter('.tseeds')->text();
         $leechs = $node->filter('.tpeers')->text();
         $urlTorrent = $this->baseURL . $node->filter('.tname a')->attr("href");
-        preg_match("/tf(.*).html$/", $urlTorrent, $downloadLink);
-        $downloadLink = $this->baseURL . '/torrentdownload.php?id=' . $downloadLink[1];
-        $slug = $slugify->slugify($title . ' ' . $downloadLink[1]);
+        preg_match("/tf(.*).html$/", $urlTorrent, $downloadLinkArray);
+        $downloadLink = $this->baseURL . '/torrentdownload.php?id=' . $downloadLinkArray[1];
+        $slug = $slugify->slugify($title . ' ' . $downloadLinkArray[1]);
         $torrent = new Btstorrent();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);
