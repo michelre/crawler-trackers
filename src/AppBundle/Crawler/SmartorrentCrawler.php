@@ -8,6 +8,7 @@ use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
+use Cocur\Slugify\Slugify;
 
 
 class SmartorrentCrawler
@@ -94,24 +95,10 @@ class SmartorrentCrawler
         return $torrents;
     }
 
-    protected function _slugify($str, $replace = array(), $delimiter = '-')
-    {
-        if (!empty($replace)) {
-            $str = str_replace((array)$replace, ' ', $str);
-        }
-
-        $clean = $str; //iconv('UTF-8', 'ASCII//TRANSLIT', $str);
-        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-
-        return $clean;
-    }
-
     protected function _createTorrentObject($node, $category)
     {
+        $slugify = new Slugify();
         $title = trim($node->filter('td.nom > a')->text());
-        $slug = $this->_slugify($title);
         $size = $node->filter('td.completed')->text();
         $seeds = $node->filter('td.seed')->text();
         $leechs = $node->filter('td.leech')->text();
@@ -119,6 +106,7 @@ class SmartorrentCrawler
         preg_match("/\/(\d.*)\/$/", $url, $urlRegex);
         $downloadLink = $this->baseURL . '/?page=download&tid=' . $urlRegex[1];
         $category = $this->_getCategoryCorrespondance($node->filter('td.nom > div')->attr('class'));
+        $slug = $slugify->slugify($title . ' ' . $urlRegex[1]);
         $torrent = new Smartorrent();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);

@@ -8,6 +8,7 @@ use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
+use Cocur\Slugify\Slugify;
 
 
 
@@ -72,22 +73,9 @@ class OmgCrawler{
         return $torrents;
     }
 
-    protected function _slugify($str, $replace=array(), $delimiter='-') {
-        if( !empty($replace) ) {
-            $str = str_replace((array)$replace, ' ', $str);
-        }
-
-        $clean = $str;//iconv('UTF-8', 'ASCII//TRANSLIT', $str);
-        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-
-        return $clean;
-    }
-
     protected function _createTorrentObject($node){
+        $slugify = new Slugify();
         $title = $node->filter('td:nth-child(2) a')->text();
-        $slug  = $this->_slugify($title);
         $size = $node->filter('td:nth-child(3)')->text();
         $seeds = preg_replace("/,/", "", $node->filter('td.sources')->text());
         $leechs = preg_replace("/,/", "", $node->filter('td.clients')->text());
@@ -95,6 +83,7 @@ class OmgCrawler{
         preg_match("/_(\d.*).html$/", $url, $urlRegex);
         $downloadLink = $this->baseURL . '/clic_dl.php?id=' . $urlRegex[1];
         $category = $node->filter('td:nth-child(1)')->text();
+        $slug = $slugify->slugify($title . ' ' . $urlRegex[1]);
         $torrent = new Omg();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);

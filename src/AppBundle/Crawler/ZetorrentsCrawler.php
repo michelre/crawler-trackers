@@ -4,6 +4,7 @@ namespace AppBundle\Crawler;
 
 use AppBundle\AppBundle;
 use AppBundle\Document\Zetorrents;
+use Cocur\Slugify\Slugify;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -104,27 +105,15 @@ class ZetorrentsCrawler{
         return $torrents;
     }
 
-    protected function _slugify($str, $replace=array(), $delimiter='-') {
-        if( !empty($replace) ) {
-            $str = str_replace((array)$replace, ' ', $str);
-        }
-
-        $clean = $str;//iconv('UTF-8', 'ASCII//TRANSLIT', $str);
-        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-
-        return $clean;
-    }
-
     protected function _createTorrentObject($node, $category){
+        $slugify = new Slugify();
         $title = $node->filter('td:nth-child(2) a')->text();
-        $slug  = $this->_slugify($title);
         $size = $node->filter('td:nth-child(3) span')->text();
         $seeds = $node->filter('td:nth-child(4) span')->text();
         $leechs = $node->filter('td:nth-child(5) span')->text();
         $url = $this->baseURL . $node->filter('td:nth-child(2) a')->attr('href');
         $downloadLink = $this->_getDownloadLink($url);
+        $slug = $slugify->slugify($title);
         $torrent = new Zetorrents();
         $torrent->setSlug($slug);
         $torrent->setTitle($title);

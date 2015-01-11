@@ -40,6 +40,7 @@ class DefaultController extends Controller
             $torrentDAO = new TorrentDAO($dm, 'Cpasbien');
             $crawler = new CpasbienCrawler($torrentDAO);
             $crawler->start();
+
         }
         if(strcmp($tracker, "zetorrents") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Zetorrents');
