@@ -16,7 +16,7 @@ class BtstorrentCrawler
 
     private $torrentDAO;
     private $baseURL = "http://www.btstorrent.so";
-    private $poolSize = 100;
+    private $poolSize = 75;
 
     public function __construct($torrentDAO)
     {
@@ -108,15 +108,15 @@ class BtstorrentCrawler
     {
         $client = new Client();
         Pool::send($client, $requests, [
-            'complete' => function (CompleteEvent $event) use (&$torrents, &$category) {
+            'complete' => function (CompleteEvent $event) use (&$category) {
                     $crawler = new Crawler($event->getResponse()->getBody()->getContents());
                     $crawler->filter('table.tor tr[id]')->each(function ($node) use(&$event, &$category){
                         $torrent = $this->_createTorrentObject($node, $category);
                         $this->torrentDAO->createOrUpdate($torrent);
+                        $torrent = null;
                     });
                 }
         ]);
-        return $torrents;
     }
 
 
