@@ -4,6 +4,7 @@ namespace AppBundle\Crawler;
 
 use AppBundle\AppBundle;
 use AppBundle\Document\Btstorrent;
+use AppBundle\Services\BodyReader;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -16,11 +17,16 @@ class BtstorrentCrawler
 
     private $torrentDAO;
     private $baseURL = "http://www.btstorrent.so";
-    private $poolSize = 75;
+    private $poolSize = 100;
+    private $bodyReader;
 
-    public function __construct($torrentDAO)
+    private $logger;
+
+    public function __construct($torrentDAO, $logger)
     {
         $this->torrentDAO = $torrentDAO;
+        $this->logger = $logger;
+        $this->bodyReader = new BodyReader();
     }
 
     public function start()
@@ -95,7 +101,6 @@ class BtstorrentCrawler
     {
         $client = new Client();
         $response = $client->get($url);
-        $status_code = $response->getStatusCode();
         $crawler = new Crawler($response->getBody()->getContents());
         if ($crawler->filter(".pagination ul")->count() > 0) {
             $lastPageNode = $crawler->filter(".pagination ul li")->eq(sizeof($crawler->filter(".pagination ul")->children()) - 3);
@@ -109,7 +114,8 @@ class BtstorrentCrawler
         $client = new Client();
         Pool::send($client, $requests, [
             'complete' => function (CompleteEvent $event) use (&$category) {
-                    $crawler = new Crawler($event->getResponse()->getBody()->getContents());
+                    $content = $this->bodyReader->extractDataFromStream($event->getResponse()->getBody(), "/\<table class=/", "/\<\/table\>/");
+                    $crawler = new Crawler($content);
                     $crawler->filter('table.tor tr[id]')->each(function ($node) use(&$event, &$category){
                         $torrent = $this->_createTorrentObject($node, $category);
                         $this->torrentDAO->createOrUpdate($torrent);

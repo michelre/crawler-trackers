@@ -50,7 +50,7 @@ class DefaultController extends Controller
         }
         if(strcmp($tracker, "btstorrent") == 0){
             $torrentDAO = new TorrentDAO($dm, 'Btstorrent');
-            $crawler = new BtstorrentCrawler($torrentDAO);
+            $crawler = new BtstorrentCrawler($torrentDAO, $logger = $this->get('logger'));
             $crawler->start();
         }
         if(strcmp($tracker, "omg") == 0){
