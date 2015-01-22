@@ -34,8 +34,7 @@ class BtstorrentCrawler
         $categories = $this->_findCategories();
         foreach ($categories as $category) {
             foreach ($category["links"] as $link) {
-                //$nbTotalPages = $this->_findNbPagesTotal($link);
-                $nbTotalPages = 2;
+                $nbTotalPages = $this->_findNbPagesTotal($link);
                 $i = 1;
                 while ($i < $nbTotalPages) {
                     $requests = $this->_createPoolRequests($i, $nbTotalPages, $link);
@@ -61,14 +60,14 @@ class BtstorrentCrawler
         $crawler = new Crawler($response->getBody()->getContents());
         $categories = array(
             1 => array('name' => 'Films', 'links' => []),
-            /*2 => array('name' => "Series", 'links' => []),
+            2 => array('name' => "Series", 'links' => []),
             3 => array('name' => 'Musique', 'links' => []),
             4 => array('name' => "Jeux", 'links' => []),
             5 => array('name' => "Logiciels", 'links' => []),
             6 => array('name' => "Anime", 'links' => []),
             7 => array('name' => "Misc", 'links' => []),
             8 => array('name' => "Porn", 'links' => []),
-            9 => array('name' => "Ebooks", 'links' => [])*/);
+            9 => array('name' => "Ebooks", 'links' => []));
         foreach ($categories as $key => $values) {
             $crawler->filter('#subcat_ul_' . $key . ' li > a:not([rel])')->each(function ($node) use (&$categories, &$values, &$key) {
                 if(preg_match('#^\/subcat\/#', $node->attr('href'))){
