@@ -30,9 +30,10 @@ class StartCommand extends ContainerAwareCommand{
         //Ensure that mongo-connector process is stopped
         exec("killall mongo-connector");
         //Delete all torrents in Solr for the right tracker
-        $client->get('http://localhost:8983/solr/collection1/update?commit=true&stream.body=<delete><query>tracker:'. $tracker .'</query></delete>');
+        $response = $client->get('http://localhost:8983/solr/collection1/update?commit=true&stream.body=<delete><query>tracker:'. $tracker .'</query></delete>');
+        var_dump($response);
         //Delete oplogsstatus file and start mongo-connector to replicate data from mongo to Solr and stop mongo-connector
-        exec("rm -f oplogstatus.txt ; mongo-connector -m localhost:27017 -t http://localhost:8983/solr -d /usr/local/lib/python2.7/dist-packages/mongo_connector/doc_managers/solr_doc_manager.py --oplog-ts oplogstatus.txt");
+        //exec("rm -f ~/oplogstatus.txt ; mongo-connector -m localhost:27017 -t http://localhost:8983/solr -d /usr/local/lib/python2.7/dist-packages/mongo_connector/doc_managers/solr_doc_manager.py --oplog-ts ~/oplogstatus.txt");
 
     }
 
