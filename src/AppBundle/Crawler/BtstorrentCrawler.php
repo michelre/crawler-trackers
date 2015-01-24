@@ -2,7 +2,6 @@
 
 namespace AppBundle\Crawler;
 
-use AppBundle\AppBundle;
 use AppBundle\Document\Btstorrent;
 use AppBundle\Services\BodyReader;
 use GuzzleHttp\Event\CompleteEvent;
@@ -19,14 +18,13 @@ class BtstorrentCrawler
     private $baseURL = "http://www.btstorrent.so";
     private $poolSize = 100;
     private $bodyReader;
+    private $categories;
 
-    private $logger;
-
-    public function __construct($torrentDAO, $logger)
+    public function __construct($torrentDAO, $categories)
     {
         $this->torrentDAO = $torrentDAO;
-        $this->logger = $logger;
         $this->bodyReader = new BodyReader();
+        $this->categories = $categories;
     }
 
     public function start()
@@ -43,7 +41,6 @@ class BtstorrentCrawler
                     $this->torrentDAO->flush();
                     $this->torrentDAO->clear();
                     unset($requests);
-                    $this->logger->info(memory_get_usage() / 1024);
                 }
                 if ($i >= $nbTotalPages || $nbTotalPages == 0) {
                     $request = [$this->_createRequest($link)];
@@ -60,7 +57,7 @@ class BtstorrentCrawler
         $client = new Client();
         $response = $client->get($this->baseURL . '/browse/');
         $crawler = new Crawler($response->getBody()->getContents());
-        $categories = array(
+        $allCategories = array(
             1 => array('name' => 'Films', 'links' => []),
             2 => array('name' => "Series", 'links' => []),
             3 => array('name' => 'Musique', 'links' => []),
@@ -70,6 +67,12 @@ class BtstorrentCrawler
             7 => array('name' => "Misc", 'links' => []),
             8 => array('name' => "Porn", 'links' => []),
             9 => array('name' => "Ebooks", 'links' => []));
+        if(sizeof($this->categories) > 0)
+            $categories = array_filter($allCategories, function($category){
+                return in_array($category['name'], $this->categories);
+            });
+        else
+            $categories = $allCategories;
         foreach ($categories as $key => $values) {
             $crawler->filter('#subcat_ul_' . $key . ' li > a:not([rel])')->each(function ($node) use (&$categories, &$values, &$key) {
                 if(preg_match('#^\/subcat\/#', $node->attr('href'))){
@@ -78,9 +81,7 @@ class BtstorrentCrawler
                 $categories[$key] = $values;
             });
         }
-        $crawler = null;
         return $categories;
-
     }
 
     protected function _createPoolRequests($i, $total, $link)

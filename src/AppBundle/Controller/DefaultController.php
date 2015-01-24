@@ -22,8 +22,7 @@ class DefaultController
         $this->logger = $logger;
     }
 
-     public function dataAction($tracker){
-        //$dm = $this->get('doctrine_mongodb')->getManager();
+     public function dataAction($tracker, $categories = array()){
         $urlDAO = null; $torrentDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Smartorrent');
@@ -42,7 +41,7 @@ class DefaultController
         }
         if(strcmp($tracker, "btstorrent") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Btstorrent');
-            $crawler = new BtstorrentCrawler($torrentDAO, $this->logger);
+            $crawler = new BtstorrentCrawler($torrentDAO, $categories);
             $crawler->start();
         }
         if(strcmp($tracker, "omg") == 0){

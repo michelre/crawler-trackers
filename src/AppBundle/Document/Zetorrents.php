@@ -8,7 +8,7 @@ use AppBundle\Document\Torrent;
 
 /**
  * Class Zetorrents
- * @package AppBundle\Document
+ * @package ApiBundle\Document
  * @MongoDB\Document(db="torrents", collection="zetorrents")
  */
 class Zetorrents extends Torrent {}

@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
  * Class Stats
- * @package AppBundle\Document
+ * @package ApiBundle\Document
  * @MongoDB\Document(db="torrents", collection="statsTracker")
  */
 class Stats{

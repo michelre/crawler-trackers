@@ -8,7 +8,7 @@ use AppBundle\Document\Torrent;
 
 /**
  * Class Cpasbien
- * @package AppBundle\Document
+ * @package ApiBundle\Document
  * @MongoDB\Document(db="torrents", collection="cpasbien")
  */
 class Cpasbien extends Torrent {}

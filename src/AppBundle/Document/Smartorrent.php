@@ -8,7 +8,7 @@ use AppBundle\Document\Torrent;
 
 /**
  * Class Smartorrent
- * @package AppBundle\Document
+ * @package ApiBundle\Document
  * @MongoDB\Document(db="torrents", collection="smartorrent")
  */
 class Smartorrent extends Torrent {}

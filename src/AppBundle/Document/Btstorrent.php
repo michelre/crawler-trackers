@@ -8,7 +8,7 @@ use AppBundle\Document\Torrent;
 
 /**
  * Class BtsTorrent
- * @package AppBundle\Document
+ * @package ApiBundle\Document
  * @MongoDB\Document(db="torrents", collection="btstorrent")
  */
 class Btstorrent extends Torrent {}
