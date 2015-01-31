@@ -22,10 +22,10 @@ class TorrentDAO {
     }
 
     public function createOrUpdate($torrent){
-        $torrents = $this->findBySlug($torrent->getSlug());
-        if(!empty($torrents))
-            $this->update($torrent, $torrents[0]);
-        else
+        //$torrents = $this->findBySlug($torrent->getSlug());
+        //if(!empty($torrents))
+        //    $this->update($torrent, $torrents[0]);
+        //else
             $this->dm->persist($torrent);
     }
 
@@ -47,6 +47,13 @@ class TorrentDAO {
 
     public function clear(){
         $this->dm->clear();
+    }
+
+    public function removeAll(){
+        $qb = $this->dm->createQueryBuilder("AppBundle:" . $this->repositoryName );
+        $qb->remove()
+            ->getQuery()
+            ->execute();
     }
 
 } 

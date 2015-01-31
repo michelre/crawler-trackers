@@ -26,26 +26,31 @@ class DefaultController
         $urlDAO = null; $torrentDAO = null;
         if(strcmp($tracker, "smartorrent") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Smartorrent');
+            $torrentDAO->removeAll();
             $crawler = new SmartorrentCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "cpasbien") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Cpasbien');
+            $torrentDAO->removeAll();
             $crawler = new CpasbienCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "zetorrents") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Zetorrents');
+            $torrentDAO->removeAll();
             $crawler = new ZetorrentsCrawler($torrentDAO);
             $crawler->start();
         }
         if(strcmp($tracker, "btstorrent") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Btstorrent');
+            $torrentDAO->removeAll();
             $crawler = new BtstorrentCrawler($torrentDAO, $categories);
             $crawler->start();
         }
         if(strcmp($tracker, "omg") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Omg');
+            $torrentDAO->removeAll();
             $crawler = new OmgCrawler($torrentDAO);
             $crawler->start();
         }
