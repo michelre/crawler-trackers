@@ -44,7 +44,10 @@ class DefaultController
         }
         if(strcmp($tracker, "btstorrent") == 0){
             $torrentDAO = new TorrentDAO($this->dm, 'Btstorrent');
-            $torrentDAO->removeAll();
+            if(empty($categories))
+                $torrentDAO->removeAll();
+            else
+                $torrentDAO->removeAccordingToCategories($categories);
             $crawler = new BtstorrentCrawler($torrentDAO, $categories);
             $crawler->start();
         }

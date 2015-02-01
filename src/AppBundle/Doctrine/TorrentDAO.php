@@ -56,4 +56,12 @@ class TorrentDAO {
             ->execute();
     }
 
+    public function removeAccordingToCategories($categories){
+        $qb = $this->dm->createQueryBuilder("AppBundle:" . $this->repositoryName );
+        $qb->remove()
+            ->field('category')->in($categories)
+            ->getQuery()
+            ->execute();
+    }
+
 } 

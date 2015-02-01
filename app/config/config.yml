@@ -78,7 +78,7 @@ doctrine_mongodb:
           server: mongodb://localhost:27017
           options:
               connect: true
-              timeout: -1
+              timeout: 600000
     default_database: torrents
     document_managers:
         default:

@@ -23,13 +23,12 @@ class StartCommand extends ContainerAwareCommand{
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-    	//Ensure that mongo-connector process is stopped to avoid replicating during crawling
+    	//Ensure that mongo-connector process is stopped to avoid replication during crawling
         exec("killall /usr/local/bin/mongo-connector");
-
-	$tracker = $input->getArgument('tracker');
+	    $tracker = $input->getArgument('tracker');
+        $categories = $input->getOption('categories');
         $controller = $this->getContainer()->get('main_controller');
-        $controller->dataAction($tracker, $input->getOption('categories'));
-
+        $controller->dataAction($tracker, $categories);
         $client = new Client();
         //Delete all torrents in Solr for the right tracker
         $client->get('http://localhost:8983/solr/collection1/update?commit=true&stream.body=<delete><query>tracker:'. $tracker .'</query></delete>');
