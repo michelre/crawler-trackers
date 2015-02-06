@@ -32,6 +32,12 @@ class OmgCrawler{
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
         }
+        if($i >= $nbTotalPages){
+            $requests = [$this->_createRequest($this->baseURL . '/torrents/?order=id&orderby=desc&page=' . $i)];
+            $this->_extractTorrentsData($requests);
+            $this->torrentDAO->flush();
+            $this->torrentDAO->clear();
+        }
     }
 
     protected function _createPoolRequests($i, $total)

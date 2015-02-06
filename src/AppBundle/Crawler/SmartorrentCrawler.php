@@ -34,13 +34,12 @@ class SmartorrentCrawler
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
         }
-        /*if($i >= $nbTotalPages){
-            var_dump($i);
+        if($i >= $nbTotalPages){
             $requests = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd')];
             $this->_extractTorrentsData($requests);
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
-        }*/
+        }
     }
 
     protected function _createPoolRequests($i, $total)
