@@ -34,12 +34,13 @@ class SmartorrentCrawler
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
         }
-        if($i >= $nbTotalPages){
+        /*if($i >= $nbTotalPages){
+            var_dump($i);
             $requests = [$this->_createRequest($this->baseURL . '/torrents/' . $nbTotalPages . '/ordre/dd')];
             $this->_extractTorrentsData($requests);
             $this->torrentDAO->flush();
             $this->torrentDAO->clear();
-        }
+        }*/
     }
 
     protected function _createPoolRequests($i, $total)
@@ -131,7 +132,7 @@ class SmartorrentCrawler
           'global_ebook'   => 'Jeux',
         );
 
-        return $categories[$className];
+        return (array_key_exists($className, $categories)) ? $categories[$className] : $className;
     }
 
 }
