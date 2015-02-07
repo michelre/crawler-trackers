@@ -10,7 +10,6 @@ class TorrentDAO {
 
     public function __construct($dm, $repositoryName){
         $this->dm = $dm;
-        $this->dm->timeout(-1);
         $this->repositoryName = $repositoryName;
     }
 
@@ -59,10 +58,11 @@ class TorrentDAO {
 
     public function removeAccordingToCategories($categories){
         $qb = $this->dm->createQueryBuilder("AppBundle:" . $this->repositoryName );
-        $qb->remove()
+        $cursor = $qb->remove()
             ->field('category')->in($categories)
             ->getQuery()
             ->execute();
+        $cursor->timeout(-1);
     }
 
 } 
