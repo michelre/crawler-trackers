@@ -57,12 +57,12 @@ class TorrentDAO {
     }
 
     public function removeAccordingToCategories($categories){
+        \MongoCursor::$timeout = -1;
         $qb = $this->dm->createQueryBuilder("AppBundle:" . $this->repositoryName );
         $cursor = $qb->remove()
             ->field('category')->in($categories)
             ->getQuery()
             ->execute();
-        $cursor->timeout(-1);
     }
 
 } 
