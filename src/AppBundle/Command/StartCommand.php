@@ -24,7 +24,7 @@ class StartCommand extends ContainerAwareCommand{
     protected function execute(InputInterface $input, OutputInterface $output)
     {
     	//Ensure that mongo-connector process is stopped to avoid replication during crawling
-        exec("killall /usr/local/bin/mongo-connector");
+        exec("killall mongo-connector");
 	    $tracker = $input->getArgument('tracker');
         $categories = $input->getOption('categories');
         $controller = $this->getContainer()->get('main_controller');
