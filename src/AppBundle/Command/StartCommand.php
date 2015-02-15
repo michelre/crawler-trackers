@@ -36,7 +36,7 @@ class StartCommand extends ContainerAwareCommand{
         else
             $client->get('http://localhost:8983/solr/collection1/update?commit=true&stream.body=<delete><query>tracker:'. $tracker .' AND category:(' . join(' OR ', $categories) .')</query></delete>');
         //Delete oplogsstatus file and start mongo-connector to replicate data from mongo to Solr
-        exec("rm -f ~/oplogstatus.txt ; /usr/local/bin/mongo-connector -m localhost:27017 -t http://localhost:8983/solr -d /usr/local/lib/python2.7/dist-packages/mongo_connector/doc_managers/solr_doc_manager.py --oplog-ts ~/oplogstatus.txt &");
+        exec("rm -f ~/oplogstatus.txt ; /usr/local/bin/mongo-connector -m localhost:27017 -t http://michelre:ddeeffg38c@localhost:8983/solr -d /usr/local/lib/python2.7/dist-packages/mongo_connector/doc_managers/solr_doc_manager.py --oplog-ts ~/oplogstatus.txt &");
 
     }
 

@@ -128,7 +128,7 @@ class SmartorrentCrawler
           'global_dvdrip' => 'Films',
           'global_music'  => 'Musique',
           'global_tvrip'  => 'Série',
-          'global_ebook'   => 'Jeux',
+          'global_ebook'  => 'Jeux',
         );
 
         return (array_key_exists($className, $categories)) ? $categories[$className] : $className;
