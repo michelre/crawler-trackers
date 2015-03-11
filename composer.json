@@ -8,7 +8,7 @@
     }],
     "description": "Trackers'crawler Bundle",
     "autoload": {
-        "psr-0": { "": "src/", "SymfonyStandard": "app/" }
+        "psr-0": { "CrawlerBundle\\": "src/", "SymfonyStandard": "app/" }
     },
     "require": {
         "php": ">=5.3.3",
