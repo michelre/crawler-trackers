@@ -64,4 +64,11 @@ class DefaultController
         }
         return "OK";
     }
+
+    public function getTorrentDetail($tracker, $url){
+        if($tracker === "cpasbien"){
+            $crawler = new CpasbienCrawler();
+            $description = $crawler->getTorrentDetails($url);
+        }
+    }
 }

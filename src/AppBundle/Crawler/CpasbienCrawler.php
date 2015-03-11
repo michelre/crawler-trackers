@@ -18,7 +18,7 @@ class CpasbienCrawler{
     private $baseURL = "http://www.cpasbien.pe";
     private $poolSize = 100;
 
-    public function __construct($torrentDAO){
+    public function __construct($torrentDAO = null){
         $this->torrentDAO = $torrentDAO;
     }
 
@@ -105,6 +105,16 @@ class CpasbienCrawler{
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("cpasbien");
         return $torrent;
+    }
+
+    public function getTorrentDetails($url){
+        $client = new Client();
+        $request = $client->createRequest('GET', 'http://httpbin.org/get');
+        $response = $client->send($request);
+        $crawler = new Crawler($response->getBody()->getContents());
+        $paragraphs = $crawler->filter('#textefiche')->children('p');
+        return $paragraphs->getNode(1)->textContent;
+
     }
 
 }

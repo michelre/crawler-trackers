@@ -1,8 +1,12 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "michelre/crawlerBundle",
     "license": "MIT",
-    "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "type": "symfony-bundle",
+    "authors": [{
+        "name" : "Rémi Michel",
+        "email": "remi.michel38@gmail.com"
+    }],
+    "description": "Trackers'crawler Bundle",
     "autoload": {
         "psr-0": { "": "src/", "SymfonyStandard": "app/" }
     },
