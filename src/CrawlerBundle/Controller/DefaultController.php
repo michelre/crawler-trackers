@@ -10,11 +10,8 @@ use CrawlerBundle\Crawler\OmgCrawler;
 use CrawlerBundle\Doctrine\StatsDAO;
 use CrawlerBundle\Doctrine\TorrentDAO;
 use CrawlerBundle\Stats\Stats;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("CrawlerTrackersService")
- */
+
 class DefaultController
 {
     protected $dm;

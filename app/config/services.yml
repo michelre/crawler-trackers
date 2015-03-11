@@ -5,5 +5,5 @@ parameters:
 
 services:
     main_controller:
-        class: AppBundle\Controller\DefaultController
+        class: CrawlerBundle\Controller\DefaultController
         arguments: ["@doctrine.odm.mongodb.document_manager", "@logger"]

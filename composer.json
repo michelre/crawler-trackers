@@ -27,7 +27,6 @@
         "doctrine/mongodb-odm-bundle": "3.0.*@dev",
         "guzzlehttp/guzzle": "~5.0",
         "symfony/dom-crawler": "2.6.1",
-        "jms/di-extra-bundle": "~1.1",
         "cocur/slugify": "~1.0"
     },
     "require-dev": {
