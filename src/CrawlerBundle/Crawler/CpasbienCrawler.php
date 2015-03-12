@@ -108,13 +108,15 @@ class CpasbienCrawler{
     }
 
     public function getTorrentDetails($url){
-        $client = new Client();
-        $request = $client->createRequest('GET', 'http://httpbin.org/get');
-        $response = $client->send($request);
-        $crawler = new Crawler($response->getBody()->getContents());
-        $paragraphs = $crawler->filter('#textefiche')->children('p');
-        return $paragraphs->getNode(1)->textContent;
-
+        try{
+            $client = new Client();
+            $request = $client->createRequest('GET', $url);
+            $response = $client->send($request);
+            $crawler = new Crawler($response->getBody()->getContents());
+            return $crawler->filter('#textefiche p:nth-child(2)')->text();
+        }catch(RequestException $e){
+            return '';
+        }
     }
 
 }

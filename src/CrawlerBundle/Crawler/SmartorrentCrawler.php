@@ -134,4 +134,16 @@ class SmartorrentCrawler
         return (array_key_exists($className, $categories)) ? $categories[$className] : $className;
     }
 
+    public function getTorrentDetails($url){
+        try{
+            $client = new Client();
+            $request = $client->createRequest('GET', $url);
+            $response = $client->send($request);
+            $crawler = new Crawler($response->getBody()->getContents());
+            return $crawler->filter('.bbcode_centre')->html();
+        }catch(RequestException $e){
+            return '';
+        }
+    }
+
 }

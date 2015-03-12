@@ -69,6 +69,14 @@ class DefaultController
         if($tracker === "cpasbien"){
             $crawler = new CpasbienCrawler();
             $description = $crawler->getTorrentDetails($url);
+            return array('description' => $description);
+        }
+        if($tracker === "smartorrent"){
+            $crawler = new SmartorrentCrawler();
+            $description = $crawler->getTorrentDetails($url);
+            return array('description' => $description);
         }
     }
+
+
 }
