@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Doctrine;
+namespace CrawlerBundle\Doctrine;
 
 
 class StatsDAO {
@@ -12,7 +12,7 @@ class StatsDAO {
     }
 
     public function findByTracker($tracker){
-        return $this->dm->getRepository('AppBundle:stats')->findBy(array('tracker' => $tracker));
+        return $this->dm->getRepository('CrawlerBundle:stats')->findBy(array('tracker' => $tracker));
     }
 
 

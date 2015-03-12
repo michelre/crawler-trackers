@@ -2,7 +2,7 @@
 
 namespace CrawlerBundle\Crawler;
 
-use CrawlerBundle\AppBundle;
+use CrawlerBundle\CrawlerBundle;
 use CrawlerBundle\Document\Cpasbien;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;

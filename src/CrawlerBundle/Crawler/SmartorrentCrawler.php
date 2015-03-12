@@ -2,7 +2,7 @@
 
 namespace CrawlerBundle\Crawler;
 
-use CrawlerBundle\AppBundle;
+use CrawlerBundle\CrawlerBundle;
 use CrawlerBundle\Document\Smartorrent;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;

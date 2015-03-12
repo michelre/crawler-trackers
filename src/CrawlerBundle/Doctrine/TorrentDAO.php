@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Doctrine;
+namespace CrawlerBundle\Doctrine;
 
 
 class TorrentDAO {
@@ -14,11 +14,11 @@ class TorrentDAO {
     }
 
     public function findBySlug($slug){
-        return $this->dm->getRepository('AppBundle:' . $this->repositoryName)->findBy(array('slug' => $slug));
+        return $this->dm->getRepository('CrawlerBundle:' . $this->repositoryName)->findBy(array('slug' => $slug));
     }
 
     public function nbTotalTorrents(){
-        return $this->dm->createQueryBuilder('AppBundle:' . $this->repositoryName)->count()->getQuery()->execute();
+        return $this->dm->createQueryBuilder('CrawlerBundle:' . $this->repositoryName)->count()->getQuery()->execute();
     }
 
     public function createOrUpdate($torrent){
@@ -50,7 +50,7 @@ class TorrentDAO {
     }
 
     public function removeAll(){
-        $qb = $this->dm->createQueryBuilder("AppBundle:" . $this->repositoryName );
+        $qb = $this->dm->createQueryBuilder("CrawlerBundle:" . $this->repositoryName );
         $qb->remove()
             ->getQuery()
             ->execute();
@@ -58,7 +58,7 @@ class TorrentDAO {
 
     public function removeAccordingToCategories($categories){
         \MongoCursor::$timeout = -1;
-        $qb = $this->dm->createQueryBuilder("AppBundle:" . $this->repositoryName );
+        $qb = $this->dm->createQueryBuilder("CrawlerBundle:" . $this->repositoryName );
         $cursor = $qb->remove()
             ->field('category')->in($categories)
             ->getQuery()

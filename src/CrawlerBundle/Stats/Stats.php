@@ -20,7 +20,7 @@ class Stats
     }
 
     public function calculate($tracker){
-        $stats = new \AppBundle\Document\Stats();
+        $stats = new \CrawlerBundle\Document\Stats();
         $currentDate = new \DateTime();
         $stats->setNb($this->torrentDAO->nbTotalTorrents());
         $stats->setTracker($tracker);
