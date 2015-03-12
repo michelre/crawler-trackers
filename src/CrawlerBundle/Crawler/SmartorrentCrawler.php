@@ -18,7 +18,7 @@ class SmartorrentCrawler
     private $baseURL = "http://www.smartorrent.com";
     private $poolSize = 100;
 
-    public function __construct($torrentDAO)
+    public function __construct($torrentDAO = null)
     {
         $this->torrentDAO = $torrentDAO;
     }
@@ -140,7 +140,7 @@ class SmartorrentCrawler
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return $crawler->filter('.bbcode_centre')->html();
+            return htmlentities($crawler->filter('.bbcode_centre')->html());
         }catch(RequestException $e){
             return '';
         }

@@ -18,7 +18,7 @@ class OmgCrawler{
     private $baseURL = "http://www.omgtorrent.com";
     private $poolSize = 100;
 
-    public function __construct($torrentDAO){
+    public function __construct($torrentDAO = null){
         $this->torrentDAO = $torrentDAO;
     }
 
@@ -101,6 +101,18 @@ class OmgCrawler{
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("omg");
         return $torrent;
+    }
+
+    public function getTorrentDetails($url){
+        try{
+            $client = new Client();
+            $request = $client->createRequest('GET', $url);
+            $response = $client->send($request);
+            $crawler = new Crawler($response->getBody()->getContents());
+            return htmlentities($crawler->filter('.infos_fiche')->html());
+        }catch(RequestException $e){
+            return '';
+        }
     }
 
 }

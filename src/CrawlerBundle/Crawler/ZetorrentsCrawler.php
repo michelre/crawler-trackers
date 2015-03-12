@@ -18,7 +18,7 @@ class ZetorrentsCrawler{
     private $baseURL = "http://www.zetorrents.com/";
     private $poolSize = 100;
 
-    public function __construct($torrentDAO){
+    public function __construct($torrentDAO = null){
         $this->torrentDAO = $torrentDAO;
     }
 
@@ -133,6 +133,18 @@ class ZetorrentsCrawler{
         $response = $client->get($url);
         $crawler = new Crawler($response->getBody()->getContents());
         return $this->baseURL . $crawler->filter("#download-link a")->attr('href');
+    }
+
+    public function getTorrentDetails($url){
+        try{
+            $client = new Client();
+            $request = $client->createRequest('GET', $url);
+            $response = $client->send($request);
+            $crawler = new Crawler($response->getBody()->getContents());
+            return htmlentities($crawler->filter('.content-list-torrent-view')->html());
+        }catch(RequestException $e){
+            return '';
+        }
     }
 
 }

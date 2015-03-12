@@ -66,16 +66,22 @@ class DefaultController
     }
 
     public function getTorrentDetail($tracker, $url){
+        $details = '';
         if($tracker === "cpasbien"){
             $crawler = new CpasbienCrawler();
-            $description = $crawler->getTorrentDetails($url);
-            return array('description' => $description);
+            $details = $crawler->getTorrentDetails($url);
         }
         if($tracker === "smartorrent"){
             $crawler = new SmartorrentCrawler();
             $description = $crawler->getTorrentDetails($url);
             return array('description' => $description);
         }
+        if($tracker === "omg"){
+            $crawler = new OmgCrawler();
+            $description = $crawler->getTorrentDetails($url);
+            return array('description' => $description);
+        }
+        return array('details' => $details);
     }
 
 

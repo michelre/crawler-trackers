@@ -113,7 +113,7 @@ class CpasbienCrawler{
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return $crawler->filter('#textefiche p:nth-child(2)')->text();
+            return htmlentities($crawler->filter('#gauche')->html());
         }catch(RequestException $e){
             return '';
         }

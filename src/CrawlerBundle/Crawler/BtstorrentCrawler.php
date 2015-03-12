@@ -20,7 +20,7 @@ class BtstorrentCrawler
     private $bodyReader;
     private $categories;
 
-    public function __construct($torrentDAO, $categories)
+    public function __construct($torrentDAO = null, $categories = array())
     {
         $this->torrentDAO = $torrentDAO;
         $this->bodyReader = new BodyReader();
@@ -153,6 +153,18 @@ class BtstorrentCrawler
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("btstorrent");
         return $torrent;
+    }
+
+    public function getTorrentDetails($url){
+        try{
+            $client = new Client();
+            $request = $client->createRequest('GET', $url);
+            $response = $client->send($request);
+            $crawler = new Crawler($response->getBody()->getContents());
+            return htmlentities($crawler->filter('.descr:nth-child(2)')->html());
+        }catch(RequestException $e){
+            return '';
+        }
     }
 
 }
