@@ -140,9 +140,9 @@ class SmartorrentCrawler
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return htmlentities($crawler->filter('.bbcode_centre')->html());
-        }catch(RequestException $e){
-            return '';
+            return array("description" => $crawler->filter('.bbcode_centre')->text(), "img" => "http://www.smartorrent.com" . $crawler->filter(".fichetorrent img")->attr("src"));
+        }catch(\InvalidArgumentException $e){
+            return array("description" => "Pas d'information / No information available", "img" => "");
         }
     }
 

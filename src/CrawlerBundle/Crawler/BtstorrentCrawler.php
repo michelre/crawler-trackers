@@ -161,9 +161,15 @@ class BtstorrentCrawler
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return htmlentities($crawler->filter('.descr:nth-child(2)')->html());
-        }catch(RequestException $e){
-            return '';
+            $description = $crawler->filter(".analytics_container.descr")->reduce(function(Crawler $node){
+                return $node->filter('h3')->text() === "Description";
+            });
+            if(sizeof($description) > 0)
+                return array("description" => $description->text(), "img" => "");
+            else
+                throw new Exception();
+        }catch(\InvalidArgumentException $e){
+            return array("description" => "Pas d'information / No information available", "img" => "");
         }
     }
 

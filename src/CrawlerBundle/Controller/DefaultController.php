@@ -73,13 +73,19 @@ class DefaultController
         }
         if($tracker === "smartorrent"){
             $crawler = new SmartorrentCrawler();
-            $description = $crawler->getTorrentDetails($url);
-            return array('description' => $description);
+            $details = $crawler->getTorrentDetails($url);
         }
         if($tracker === "omg"){
             $crawler = new OmgCrawler();
-            $description = $crawler->getTorrentDetails($url);
-            return array('description' => $description);
+            $details = $crawler->getTorrentDetails($url);
+        }
+        if($tracker === "zetorrents"){
+            $crawler = new ZetorrentsCrawler();
+            $details = $crawler->getTorrentDetails($url);
+        }
+        if($tracker === "btstorrent"){
+            $crawler = new BtstorrentCrawler();
+            $details = $crawler->getTorrentDetails($url);
         }
         return array('details' => $details);
     }

@@ -7,6 +7,7 @@ use CrawlerBundle\Document\Zetorrents;
 use Cocur\Slugify\Slugify;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
 
@@ -141,9 +142,9 @@ class ZetorrentsCrawler{
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return htmlentities($crawler->filter('.content-list-torrent-view')->html());
-        }catch(RequestException $e){
-            return '';
+            return array("description" => $crawler->filter(".content-list-torrent-view p")->text(), "img" => $crawler->filter("img.affiche")->attr('src'));
+        }catch(\InvalidArgumentException $e){
+            return array("description" => "Pas d'information / No information available", "img" => "");
         }
     }
 

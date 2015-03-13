@@ -109,9 +109,12 @@ class OmgCrawler{
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return htmlentities($crawler->filter('.infos_fiche')->html());
-        }catch(RequestException $e){
-            return '';
+            $imgs = $crawler->filter('.infos_fiche img')->reduce(function(Crawler $node, $i){
+                return preg_match("/\btorrents\b/", $node->attr('src'), $output_array) == 1;
+            });
+            return array("description" => $crawler->filter('.infos_fiche p')->text(), "img" => 'http://www.omgtorrent.com' . $imgs->attr('src'));
+        }catch(\InvalidArgumentException $e){
+            return array("description" => "Pas d'information / No information available", "img" => "");
         }
     }
 

@@ -6,6 +6,7 @@ use CrawlerBundle\CrawlerBundle;
 use CrawlerBundle\Document\Cpasbien;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Client;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Pool;
 use Cocur\Slugify\Slugify;
@@ -113,9 +114,9 @@ class CpasbienCrawler{
             $request = $client->createRequest('GET', $url);
             $response = $client->send($request);
             $crawler = new Crawler($response->getBody()->getContents());
-            return htmlentities($crawler->filter('#gauche')->html());
-        }catch(RequestException $e){
-            return '';
+            return array("description" => $crawler->filter('#textefiche')->text(), "img" => $crawler->filter('#bigcover img')->attr('src'));
+        }catch(\InvalidArgumentException $e){
+            return array("description" => "Pas d'information / No information available", "img" => "");
         }
     }
 
