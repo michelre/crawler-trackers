@@ -1,12 +1,12 @@
 {
-    "name": "michelre/crawler-bundle",
-    "license": "MIT",
-    "type": "symfony-bundle",
+    "name": "torrent-hunter/crawler-bundle",
+    "license": "proprietary",
+    "type": "project",
+    "description": "Trackers'crawler Bundle necessary to Torrent Hunter",
     "authors": [{
         "name" : "Rémi Michel",
-        "email": "remi.michel38@gmail.com"
+        "email": "jlmichel4@gmail.com"
     }],
-    "description": "Trackers'crawler Bundle",
     "autoload": {
         "psr-0": { "CrawlerBundle\\": "src/", "SymfonyStandard": "app/" }
     },
