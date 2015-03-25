@@ -1,6 +1,6 @@
 {
     "name": "torrent-hunter/crawler-bundle",
-    "license": "proprietary",
+    "license": "MIT",
     "type": "project",
     "description": "Trackers'crawler Bundle necessary to Torrent Hunter",
     "authors": [{
