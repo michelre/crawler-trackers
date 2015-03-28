@@ -6,4 +6,4 @@ parameters:
 services:
     torrenthunter.crawler_service:
         class: CrawlerBundle\Controller\DefaultController
-        arguments: ["@doctrine_mongodb.odm.document_manager", "@logger"]
+        arguments: ["@doctrine.odm.mongodb.document_manager", "@logger"]
