@@ -827,12 +827,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "55443f65c67d0864984832107be1ba88604bfd12"
+                "reference": "32912d1e8e94d0d26fc89e5544eaf59cdc61adb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/55443f65c67d0864984832107be1ba88604bfd12",
-                "reference": "55443f65c67d0864984832107be1ba88604bfd12",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/32912d1e8e94d0d26fc89e5544eaf59cdc61adb0",
+                "reference": "32912d1e8e94d0d26fc89e5544eaf59cdc61adb0",
                 "shasum": ""
             },
             "require": {
@@ -897,7 +897,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2015-03-24 13:30:36"
+            "time": "2015-03-26 17:06:02"
         },
         {
             "name": "doctrine/mongodb-odm-bundle",
@@ -1531,17 +1531,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v3.0.19",
+            "version": "v3.0.20",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "c68d47e3bcdfca74d92ab9d9382e276adf451424"
+                "reference": "48c76189fb0a76a20a4a67a750b513ed06074b55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/c68d47e3bcdfca74d92ab9d9382e276adf451424",
-                "reference": "c68d47e3bcdfca74d92ab9d9382e276adf451424",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/48c76189fb0a76a20a4a67a750b513ed06074b55",
+                "reference": "48c76189fb0a76a20a4a67a750b513ed06074b55",
                 "shasum": ""
             },
             "require": {
@@ -1587,7 +1587,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-03-25 09:01:40"
+            "time": "2015-03-26 11:09:50"
         },
         {
             "name": "sensio/framework-extra-bundle",

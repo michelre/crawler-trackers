@@ -11,7 +11,9 @@ use CrawlerBundle\Doctrine\StatsDAO;
 use CrawlerBundle\Doctrine\TorrentDAO;
 use CrawlerBundle\Stats\Stats;
 
-
+/**
+ * @Route(service="torrenthunter.crawler_service")
+ */
 class DefaultController
 {
     protected $dm;

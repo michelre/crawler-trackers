@@ -4,6 +4,6 @@ parameters:
 #    parameter_name: value
 
 services:
-    crawlerService:
+    torrenthunter.crawler_service:
         class: CrawlerBundle\Controller\DefaultController
-        arguments: ["@?doctrine_mongodb.odm.document_manager", "@logger"]
+        arguments: ["@doctrine_mongodb.odm.document_manager", "@logger"]
