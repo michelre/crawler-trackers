@@ -27,7 +27,7 @@ class StartCommand extends ContainerAwareCommand{
         exec("killall mongo-connector");
 	    $tracker = $input->getArgument('tracker');
         $categories = $input->getOption('categories');
-        $controller = $this->getContainer()->get('main_controller');
+        $controller = $this->getContainer()->get('torrenthunter.crawler_service');
         $controller->dataAction($tracker, $categories);
 
         $client = new Client();
