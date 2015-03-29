@@ -105,6 +105,7 @@ class CpasbienCrawler{
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("cpasbien");
+        $torrent->setVisible(true);
         return $torrent;
     }
 

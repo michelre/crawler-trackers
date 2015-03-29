@@ -61,6 +61,11 @@ abstract class Torrent {
      */
     protected $category;
 
+    /**
+     * @MongoDB\Boolean
+     */
+    protected $visible;
+
 
     /**
      * Get id
@@ -269,4 +274,22 @@ abstract class Torrent {
     {
         return $this->category;
     }
+
+    /**
+     * @param mixed $visible
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
+
+
 }

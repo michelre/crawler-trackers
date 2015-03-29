@@ -100,6 +100,7 @@ class OmgCrawler{
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("omg");
+        $torrent->setVisible(true);
         return $torrent;
     }
 

@@ -125,6 +125,7 @@ class ZetorrentsCrawler{
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("zetorrents");
+        $torrent->setVisible(true);
         return $torrent;
     }
 

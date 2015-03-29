@@ -152,6 +152,7 @@ class BtstorrentCrawler
         $torrent->setUrl($urlTorrent);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("btstorrent");
+        $torrent->setVisible(false);
         return $torrent;
     }
 

@@ -117,6 +117,7 @@ class SmartorrentCrawler
         $torrent->setUrl($url);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("smartorrent");
+        $torrent->setVisible(true);
         return $torrent;
     }
 
