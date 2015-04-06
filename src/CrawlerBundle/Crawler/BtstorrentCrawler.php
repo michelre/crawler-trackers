@@ -15,7 +15,7 @@ class BtstorrentCrawler
 {
 
     private $torrentDAO;
-    private $baseURL = "http://www.btstorrent.so";
+    private $baseURL = "http://www.btscene.cc";
     private $poolSize = 100;
     private $bodyReader;
     private $categories;
@@ -152,7 +152,7 @@ class BtstorrentCrawler
         $torrent->setUrl($urlTorrent);
         $torrent->setDownloadLink($downloadLink);
         $torrent->setTracker("btstorrent");
-        $torrent->setVisible(false);
+        $torrent->setVisible(true);
         return $torrent;
     }
 
